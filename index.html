@@ -8,535 +8,296 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0A0A0A;--surface:#111111;--surface-el:#1A1A1A;--gold:#C9A84C;--gold-h:#E2C06A;--text:#F5F5F0;--text-sec:#9A9A90;--border:rgba(201,168,76,0.15);--border-h:rgba(201,168,76,0.40);--danger:#E05252;--success:#4CAF7D;--warn:#E0A952;--radius:12px;--glow:0 0 24px rgba(201,168,76,0.25)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-weight:400;line-height:1.6;overflow-x:hidden}
 
-  :root {
-    --bg: #0A0A0A;
-    --surface: #111111;
-    --surface-el: #1A1A1A;
-    --gold: #C9A84C;
-    --gold-h: #E2C06A;
-    --text: #F5F5F0;
-    --text-sec: #9A9A90;
-    --border: rgba(201,168,76,0.15);
-    --border-h: rgba(201,168,76,0.40);
-    --danger: #E05252;
-    --success: #4CAF7D;
-    --radius: 12px;
-    --glow: 0 0 24px rgba(201,168,76,0.25);
-  }
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .6s ease}
+.loader-ring{width:56px;height:56px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
+.loader-text{margin-top:16px;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);letter-spacing:.15em}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  html { scroll-behavior: smooth; }
+/* NAVBAR */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:transparent;transition:background .4s,backdrop-filter .4s,padding .3s;border-bottom:1px solid transparent}
+nav.scrolled{background:rgba(10,10,10,.92);backdrop-filter:blur(16px);padding:14px 48px;border-bottom-color:var(--border)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);letter-spacing:.05em;cursor:pointer}
+.nav-links{display:flex;gap:28px;align-items:center;list-style:none}
+.nav-links a{color:var(--text-sec);text-decoration:none;font-size:.875rem;font-weight:500;letter-spacing:.05em;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-links .admin-link{font-size:.75rem;opacity:.6}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.hamburger span{width:22px;height:1.5px;background:var(--gold);transition:.3s}
+.mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,10,.97);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:var(--text);text-decoration:none;font-size:1.5rem;font-family:'Playfair Display',serif}
+.mobile-close{position:absolute;top:24px;right:36px;font-size:1.8rem;cursor:pointer;color:var(--gold)}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;overflow:hidden}
+#particles-canvas{position:absolute;inset:0;pointer-events:none}
+.hero-eyebrow{font-size:.75rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,7rem);font-weight:700;line-height:1.05;color:var(--text);margin-bottom:20px}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:1.05rem;color:var(--text-sec);max-width:440px;margin:0 auto 40px;font-weight:300}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.btn-gold{background:var(--gold);color:#0A0A0A;border:none;padding:14px 32px;border-radius:2px;font-family:'Inter',sans-serif;font-size:.875rem;font-weight:600;letter-spacing:.08em;cursor:pointer;transition:background .2s,box-shadow .2s,transform .15s;text-decoration:none;display:inline-block}
+.btn-gold:hover{background:var(--gold-h);box-shadow:var(--glow);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid var(--border-h);padding:13px 32px;border-radius:2px;font-family:'Inter',sans-serif;font-size:.875rem;font-weight:500;letter-spacing:.08em;cursor:pointer;transition:border-color .2s,background .2s;text-decoration:none;display:inline-block}
+.btn-outline:hover{background:rgba(201,168,76,.06);border-color:var(--gold)}
+.hero-scroll{position:absolute;bottom:32px;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-sec);font-size:.7rem;letter-spacing:.15em}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
 
-  /* ── LOADER ── */
-  #loader {
-    position: fixed; inset: 0; background: var(--bg);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 9999; transition: opacity 0.6s ease;
-  }
-  .loader-ring {
-    width: 56px; height: 56px;
-    border: 2px solid var(--border);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  .loader-text {
-    margin-top: 16px;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    color: var(--gold);
-    letter-spacing: 0.15em;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* SECTIONS */
+section{padding:96px 48px;max-width:1200px;margin:0 auto}
+.section-eyebrow{font-size:.7rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px;color:var(--text)}
+.section-title span{color:var(--gold)}
 
-  /* ── NAVBAR ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 48px;
-    background: transparent;
-    transition: background 0.4s, backdrop-filter 0.4s, padding 0.3s;
-    border-bottom: 1px solid transparent;
-  }
-  nav.scrolled {
-    background: rgba(10,10,10,0.92);
-    backdrop-filter: blur(16px);
-    padding: 14px 48px;
-    border-bottom-color: var(--border);
-  }
-  .nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    color: var(--gold);
-    letter-spacing: 0.05em;
-    cursor: pointer;
-  }
-  .nav-links { display: flex; gap: 32px; align-items: center; list-style: none; }
-  .nav-links a {
-    color: var(--text-sec);
-    text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--gold); }
-  .nav-links .admin-link { font-size: 0.75rem; opacity: 0.6; }
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-  .hamburger span { width: 22px; height: 1.5px; background: var(--gold); transition: 0.3s; }
-  .mobile-menu {
-    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(10,10,10,0.97); z-index: 99;
-    flex-direction: column; align-items: center; justify-content: center; gap: 36px;
-  }
-  .mobile-menu.open { display: flex; }
-  .mobile-menu a {
-    color: var(--text); text-decoration: none; font-size: 1.5rem;
-    font-family: 'Playfair Display', serif;
-  }
-  .mobile-close {
-    position: absolute; top: 24px; right: 36px;
-    font-size: 1.8rem; cursor: pointer; color: var(--gold);
-  }
+/* FLEET */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px}
+.filter-btn{padding:8px 20px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-sec);font-size:.8rem;letter-spacing:.05em;font-weight:500;cursor:pointer;transition:all .2s}
+.filter-btn:hover,.filter-btn.active{background:rgba(201,168,76,.1);border-color:var(--gold);color:var(--gold)}
+.cars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.car-card{background:rgba(255,255,255,.025);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s;position:relative}
+.car-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.04) 0%,transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;z-index:1;border-radius:var(--radius)}
+.car-card:hover{border-color:var(--border-h);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4),var(--glow)}
+.car-card:hover::before{opacity:1}
+.car-card.unavailable{opacity:.5;filter:grayscale(.6)}
+.car-img{width:100%;height:200px;object-fit:cover;display:block}
+.car-body{padding:20px}
+.car-badges{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.badge{font-size:.68rem;letter-spacing:.08em;padding:3px 10px;border-radius:20px;font-weight:500}
+.badge-cat{border:1px solid var(--border-h);color:var(--gold);background:rgba(201,168,76,.08)}
+.badge-avail{background:rgba(76,175,125,.15);color:var(--success);border:1px solid rgba(76,175,125,.3)}
+.badge-unavail{background:rgba(224,82,82,.12);color:var(--danger);border:1px solid rgba(224,82,82,.25)}
+.car-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;margin-bottom:10px;color:var(--text)}
+.car-specs{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.car-spec{font-size:.75rem;color:var(--text-sec)}
+.car-pricing{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--border);padding-top:14px;margin-top:14px}
+.car-price-label{font-size:.7rem;color:var(--text-sec)}
+.car-price-val{font-size:1.1rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--gold)}
+.car-book-btn{width:100%;margin-top:14px;padding:11px;background:rgba(201,168,76,.08);border:1px solid var(--border-h);color:var(--gold);border-radius:4px;font-size:.8rem;font-weight:600;letter-spacing:.08em;cursor:pointer;transition:all .2s}
+.car-book-btn:hover:not(:disabled){background:var(--gold);color:#0A0A0A}
+.car-book-btn:disabled{opacity:.35;cursor:not-allowed}
+.empty-fleet{text-align:center;padding:60px 24px;display:none}
+.empty-fleet-icon{font-size:3rem;margin-bottom:16px}
+.empty-fleet h3{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text-sec);margin-bottom:8px}
+.empty-fleet p{color:var(--text-sec);font-size:.9rem;margin-bottom:20px}
 
-  /* ── HERO ── */
-  #hero {
-    position: relative; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; padding: 0 24px; overflow: hidden;
-  }
-  #particles-canvas {
-    position: absolute; inset: 0; pointer-events: none;
-  }
-  .hero-eyebrow {
-    font-size: 0.75rem; letter-spacing: 0.3em; color: var(--gold);
-    text-transform: uppercase; margin-bottom: 20px;
-  }
-  .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(3rem, 8vw, 7rem);
-    font-weight: 700;
-    line-height: 1.05;
-    color: var(--text);
-    margin-bottom: 20px;
-  }
-  .hero-title span { color: var(--gold); }
-  .hero-sub {
-    font-size: 1.05rem; color: var(--text-sec);
-    max-width: 440px; margin: 0 auto 40px;
-    font-weight: 300;
-  }
-  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-  .btn-gold {
-    background: var(--gold); color: #0A0A0A;
-    border: none; padding: 14px 32px;
-    border-radius: 2px; font-family: 'Inter', sans-serif;
-    font-size: 0.875rem; font-weight: 600; letter-spacing: 0.08em;
-    cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-    text-decoration: none; display: inline-block;
-  }
-  .btn-gold:hover { background: var(--gold-h); box-shadow: var(--glow); transform: translateY(-1px); }
-  .btn-outline {
-    background: transparent; color: var(--gold);
-    border: 1px solid var(--border-h); padding: 13px 32px;
-    border-radius: 2px; font-family: 'Inter', sans-serif;
-    font-size: 0.875rem; font-weight: 500; letter-spacing: 0.08em;
-    cursor: pointer; transition: border-color 0.2s, background 0.2s;
-    text-decoration: none; display: inline-block;
-  }
-  .btn-outline:hover { background: rgba(201,168,76,0.06); border-color: var(--gold); }
-  .hero-scroll {
-    position: absolute; bottom: 32px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    color: var(--text-sec); font-size: 0.7rem; letter-spacing: 0.15em;
-  }
-  .scroll-line {
-    width: 1px; height: 40px;
-    background: linear-gradient(to bottom, var(--gold), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-  @keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+/* CALC & FORMS */
+.calc-card,.booking-card{max-width:760px;margin:0 auto;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--radius);padding:48px;backdrop-filter:blur(10px)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.75rem;letter-spacing:.08em;color:var(--text-sec);text-transform:uppercase}
+input,select,textarea{background:var(--surface-el);border:1px solid var(--border);color:var(--text);padding:12px 16px;border-radius:4px;font-family:'Inter',sans-serif;font-size:.9rem;transition:border-color .2s,box-shadow .2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.1)}
+select option{background:var(--surface-el)}
+textarea{resize:vertical;min-height:90px}
+.payment-toggle{display:flex;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.pay-btn{flex:1;padding:11px;background:transparent;border:none;color:var(--text-sec);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .2s}
+.pay-btn.active{background:rgba(201,168,76,.12);color:var(--gold)}
+.price-breakdown{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;margin-top:24px}
+.pb-row{display:flex;justify-content:space-between;padding:6px 0;font-size:.9rem;color:var(--text-sec)}
+.pb-divider{border:none;border-top:1px solid var(--border);margin:10px 0}
+.pb-total{display:flex;justify-content:space-between;font-weight:600;font-size:1rem;color:var(--text)}
+.pb-total span:last-child{color:var(--gold);font-size:1.2rem}
+.pb-note{font-size:.7rem;color:var(--text-sec);margin-top:10px;font-style:italic}
+.whatsapp-btn{width:100%;padding:16px;background:#25D366;border:none;border-radius:4px;color:#fff;font-size:.95rem;font-weight:600;letter-spacing:.05em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s,transform .15s;margin-top:24px}
+.whatsapp-btn:hover{background:#22bf5b;transform:translateY(-1px)}
 
-  /* ── SECTIONS ── */
-  section { padding: 96px 48px; max-width: 1200px; margin: 0 auto; }
-  .section-eyebrow {
-    font-size: 0.7rem; letter-spacing: 0.3em;
-    color: var(--gold); text-transform: uppercase; margin-bottom: 12px;
-  }
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700; margin-bottom: 48px;
-    color: var(--text);
-  }
-  .section-title span { color: var(--gold); }
-  .section-divider {
-    width: 60px; height: 1px;
-    background: var(--gold); margin-bottom: 48px;
-  }
+/* STAR RATING */
+.star-rating{display:flex;gap:4px;cursor:pointer}
+.star{font-size:1.6rem;color:var(--border-h);transition:color .15s;user-select:none}
+.star.filled,.star.hover-filled{color:var(--gold)}
 
-  /* ── FLEET ── */
-  .filter-bar {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px;
-  }
-  .filter-btn {
-    padding: 8px 20px; border-radius: 2px;
-    border: 1px solid var(--border);
-    background: transparent; color: var(--text-sec);
-    font-size: 0.8rem; letter-spacing: 0.05em; font-weight: 500;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .filter-btn:hover, .filter-btn.active {
-    background: rgba(201,168,76,0.1);
-    border-color: var(--gold); color: var(--gold);
-  }
-  .cars-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
-  }
-  .car-card {
-    background: rgba(255,255,255,0.025);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
-    position: relative;
-  }
-  .car-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 60%);
-    opacity: 0; transition: opacity 0.3s;
-    pointer-events: none; z-index: 1; border-radius: var(--radius);
-  }
-  .car-card:hover { border-color: var(--border-h); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.4), var(--glow); }
-  .car-card:hover::before { opacity: 1; }
-  .car-card.unavailable { opacity: 0.5; filter: grayscale(0.6); }
-  .car-img {
-    width: 100%; height: 200px; object-fit: cover;
-    display: block;
-  }
-  .car-body { padding: 20px; }
-  .car-badges { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
-  .badge {
-    font-size: 0.68rem; letter-spacing: 0.08em;
-    padding: 3px 10px; border-radius: 20px; font-weight: 500;
-  }
-  .badge-cat {
-    border: 1px solid var(--border-h);
-    color: var(--gold); background: rgba(201,168,76,0.08);
-  }
-  .badge-avail { background: rgba(76,175,125,0.15); color: var(--success); border: 1px solid rgba(76,175,125,0.3); }
-  .badge-unavail { background: rgba(224,82,82,0.12); color: var(--danger); border: 1px solid rgba(224,82,82,0.25); }
-  .car-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem; font-weight: 600;
-    margin-bottom: 10px; color: var(--text);
-  }
-  .car-specs { display: flex; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; }
-  .car-spec { font-size: 0.75rem; color: var(--text-sec); display: flex; align-items: center; gap: 4px; }
-  .car-pricing {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px;
-  }
-  .car-price-label { font-size: 0.7rem; color: var(--text-sec); }
-  .car-price-val {
-    font-size: 1.1rem; font-weight: 600;
-    font-variant-numeric: tabular-nums; color: var(--gold);
-  }
-  .car-book-btn {
-    width: 100%; margin-top: 14px;
-    padding: 11px; background: rgba(201,168,76,0.08);
-    border: 1px solid var(--border-h); color: var(--gold);
-    border-radius: 4px; font-size: 0.8rem; font-weight: 600;
-    letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s;
-  }
-  .car-book-btn:hover:not(:disabled) { background: var(--gold); color: #0A0A0A; }
-  .car-book-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+/* REVIEW CARDS */
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.review-card{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .2s}
+.review-card:hover{border-color:var(--border-h)}
+.review-stars{color:var(--gold);font-size:.9rem;margin-bottom:10px}
+.review-text{font-size:.87rem;color:var(--text-sec);font-style:italic;margin-bottom:14px;line-height:1.8}
+.review-author{font-size:.82rem;font-weight:600;color:var(--text)}
+.review-meta{font-size:.72rem;color:var(--text-sec);margin-top:4px}
+.verified-badge{font-size:.68rem;color:var(--success);border:1px solid rgba(76,175,125,.3);padding:2px 8px;border-radius:10px;margin-left:8px}
+.avg-rating{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.avg-big{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--gold)}
+.avg-stars{color:var(--gold);font-size:1.1rem}
+.avg-count{font-size:.85rem;color:var(--text-sec)}
+.review-form-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:40px}
+.review-form-card h3{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:20px}
 
-  /* ── CALCULATOR ── */
-  #calculator { padding: 80px 48px; }
-  .calc-card {
-    max-width: 760px; margin: 0 auto;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 48px;
-    backdrop-filter: blur(10px);
-  }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .form-group { display: flex; flex-direction: column; gap: 8px; }
-  .form-group.full { grid-column: 1 / -1; }
-  label { font-size: 0.75rem; letter-spacing: 0.08em; color: var(--text-sec); text-transform: uppercase; }
-  input, select, textarea {
-    background: var(--surface-el); border: 1px solid var(--border);
-    color: var(--text); padding: 12px 16px; border-radius: 4px;
-    font-family: 'Inter', sans-serif; font-size: 0.9rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 2px rgba(201,168,76,0.1);
-  }
-  select option { background: var(--surface-el); }
-  textarea { resize: vertical; min-height: 90px; }
-  .payment-toggle { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
-  .pay-btn {
-    flex: 1; padding: 11px; background: transparent;
-    border: none; color: var(--text-sec); cursor: pointer;
-    font-size: 0.85rem; font-weight: 500; transition: all 0.2s;
-  }
-  .pay-btn.active { background: rgba(201,168,76,0.12); color: var(--gold); }
-  .price-breakdown {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 20px; margin-top: 24px;
-  }
-  .pb-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.9rem; color: var(--text-sec); }
-  .pb-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
-  .pb-total { display: flex; justify-content: space-between; font-weight: 600; font-size: 1rem; color: var(--text); }
-  .pb-total span:last-child { color: var(--gold); font-size: 1.2rem; }
-  .pb-note { font-size: 0.7rem; color: var(--text-sec); margin-top: 10px; font-style: italic; }
+/* TRACK BOOKING */
+.track-card{max-width:680px;margin:0 auto;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--radius);padding:40px;backdrop-filter:blur(10px)}
+.track-input-row{display:flex;gap:12px;margin-bottom:24px}
+.track-input-row input{flex:1}
+.booking-result-card{background:var(--surface-el);border:1px solid var(--border);border-radius:8px;padding:24px;display:none}
+.br-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(201,168,76,.06);font-size:.88rem}
+.br-row:last-child{border-bottom:none}
+.br-label{color:var(--text-sec);min-width:130px}
+.br-val{color:var(--text);font-weight:500}
+.status-pill{padding:4px 14px;border-radius:20px;font-size:.78rem;font-weight:600;display:inline-block}
+.status-pending{background:rgba(224,169,82,.15);color:var(--warn)}
+.status-confirmed{background:rgba(76,175,125,.15);color:var(--success)}
+.status-cancelled{background:rgba(224,82,82,.15);color:var(--danger)}
 
-  /* ── BOOKING FORM ── */
-  #booking { padding: 80px 48px; }
-  .booking-card {
-    max-width: 760px; margin: 0 auto;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 48px;
-  }
-  .whatsapp-btn {
-    width: 100%; padding: 16px;
-    background: #25D366; border: none; border-radius: 4px;
-    color: #fff; font-size: 0.95rem; font-weight: 600;
-    letter-spacing: 0.05em; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    transition: background 0.2s, transform 0.15s;
-    margin-top: 24px;
-  }
-  .whatsapp-btn:hover { background: #22bf5b; transform: translateY(-1px); }
+/* WHY/TESTIMONIAL/FAQ */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.why-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:border-color .2s}
+.why-card:hover{border-color:var(--border-h)}
+.why-icon{font-size:1.8rem;margin-bottom:14px}
+.why-title{font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)}
+.why-desc{font-size:.85rem;color:var(--text-sec);line-height:1.7}
+.test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.test-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+.test-stars{color:var(--gold);font-size:.9rem;margin-bottom:12px}
+.test-text{font-size:.87rem;color:var(--text-sec);font-style:italic;margin-bottom:16px;line-height:1.8}
+.test-author{font-size:.8rem;font-weight:600;color:var(--text)}
+.test-role{font-size:.7rem;color:var(--text-sec)}
+.faq-item{border-bottom:1px solid var(--border);overflow:hidden}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:20px 0;cursor:pointer;font-size:.95rem;font-weight:500}
+.faq-q span{color:var(--gold);font-size:1.2rem;transition:transform .3s}
+.faq-q.open span{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-a p{padding-bottom:16px;font-size:.87rem;color:var(--text-sec);line-height:1.8}
 
-  /* ── WHY US ── */
-  #why { padding: 80px 48px; }
-  .why-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-  }
-  .why-card {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 28px;
-    transition: border-color 0.2s;
-  }
-  .why-card:hover { border-color: var(--border-h); }
-  .why-icon { font-size: 1.8rem; margin-bottom: 14px; }
-  .why-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
-  .why-desc { font-size: 0.85rem; color: var(--text-sec); line-height: 1.7; }
+/* FOOTER */
+footer{border-top:1px solid var(--border);background:var(--surface);padding:60px 48px 32px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;max-width:1200px;margin:0 auto 40px}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);margin-bottom:12px}
+.footer-desc{font-size:.85rem;color:var(--text-sec);line-height:1.8;margin-bottom:20px}
+.footer-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;border:none;padding:10px 20px;border-radius:4px;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .2s}
+.footer-wa:hover{background:#22bf5b}
+.footer-col h4{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{color:var(--text-sec);text-decoration:none;font-size:.85rem;transition:color .2s}
+.footer-col ul li a:hover{color:var(--gold)}
+.footer-col p{font-size:.85rem;color:var(--text-sec);line-height:1.8}
+.footer-bottom{max-width:1200px;margin:0 auto;border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:.78rem;color:var(--text-sec)}
 
-  /* ── FAQ ── */
-  #faq { padding: 80px 48px; }
-  .faq-item { border-bottom: 1px solid var(--border); overflow: hidden; }
-  .faq-q {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 0; cursor: pointer; font-size: 0.95rem; font-weight: 500;
-  }
-  .faq-q span { color: var(--gold); font-size: 1.2rem; transition: transform 0.3s; }
-  .faq-q.open span { transform: rotate(45deg); }
-  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-  .faq-a p { padding-bottom: 16px; font-size: 0.87rem; color: var(--text-sec); line-height: 1.8; }
+/* TOAST */
+#toasts{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:10000}
+.toast{padding:14px 20px;border-radius:6px;font-size:.85rem;font-weight:500;border-left:3px solid;backdrop-filter:blur(10px);animation:toastIn .3s ease;max-width:320px}
+.toast.success{background:rgba(76,175,125,.12);border-color:var(--success);color:var(--success)}
+.toast.error{background:rgba(224,82,82,.12);border-color:var(--danger);color:var(--danger)}
+.toast.info{background:rgba(201,168,76,.1);border-color:var(--gold);color:var(--gold)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
-  /* ── TESTIMONIALS ── */
-  #testimonials { padding: 80px 48px; }
-  .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-  .test-card {
-    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 28px;
-  }
-  .test-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 12px; }
-  .test-text { font-size: 0.87rem; color: var(--text-sec); font-style: italic; margin-bottom: 16px; line-height: 1.8; }
-  .test-author { font-size: 0.8rem; font-weight: 600; color: var(--text); }
-  .test-role { font-size: 0.7rem; color: var(--text-sec); }
+/* FLOATING WA */
+.float-wa{position:fixed;bottom:28px;left:28px;z-index:500;background:#25D366;border:none;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(37,211,102,.4);animation:waPulse 2.5s ease-in-out infinite}
+.float-wa:hover{background:#22bf5b;animation:none}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 16px rgba(37,211,102,.4)}50%{box-shadow:0 4px 28px rgba(37,211,102,.7)}}
+.float-wa-label{position:absolute;left:64px;background:var(--surface-el);color:var(--text);font-size:.72rem;padding:5px 10px;border-radius:4px;white-space:nowrap;border:1px solid var(--border);opacity:0;pointer-events:none;transition:opacity .2s}
+.float-wa:hover .float-wa-label{opacity:1}
 
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    background: var(--surface); padding: 60px 48px 32px;
-  }
-  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 48px; max-width: 1200px; margin: 0 auto 40px; }
-  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 12px; }
-  .footer-desc { font-size: 0.85rem; color: var(--text-sec); line-height: 1.8; margin-bottom: 20px; }
-  .footer-wa {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: #25D366; color: #fff; border: none;
-    padding: 10px 20px; border-radius: 4px; font-size: 0.82rem;
-    font-weight: 600; cursor: pointer; transition: background 0.2s;
-  }
-  .footer-wa:hover { background: #22bf5b; }
-  .footer-col h4 { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
-  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .footer-col ul li a { color: var(--text-sec); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
-  .footer-col ul li a:hover { color: var(--gold); }
-  .footer-col p { font-size: 0.85rem; color: var(--text-sec); line-height: 1.8; }
-  .footer-bottom {
-    max-width: 1200px; margin: 0 auto;
-    border-top: 1px solid var(--border); padding-top: 24px;
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
-  }
-  .footer-copy { font-size: 0.78rem; color: var(--text-sec); }
+/* BOOKING CONFIRMATION MODAL */
+.confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:10002;align-items:center;justify-content:center;padding:24px}
+.confirm-modal.open{display:flex}
+.confirm-box{background:var(--surface-el);border:1px solid var(--border);border-radius:var(--radius);padding:36px;max-width:480px;width:100%}
+.confirm-box h2{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.4rem;margin-bottom:6px}
+.confirm-pnr{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);letter-spacing:.08em;margin:16px 0;text-align:center;border:1px solid var(--border-h);padding:12px;border-radius:6px}
+.confirm-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid rgba(201,168,76,.06);font-size:.88rem}
+.confirm-row:last-of-type{border-bottom:none}
+.confirm-label{color:var(--text-sec);min-width:120px}
+.confirm-val{color:var(--text);font-weight:500}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.btn-copy{background:rgba(201,168,76,.08);border:1px solid var(--border-h);color:var(--gold);border-radius:4px;padding:10px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-copy:hover{background:rgba(201,168,76,.18)}
 
-  /* ── TOAST ── */
-  #toasts {
-    position: fixed; bottom: 24px; right: 24px;
-    display: flex; flex-direction: column; gap: 10px; z-index: 10000;
-  }
-  .toast {
-    padding: 14px 20px; border-radius: 6px;
-    font-size: 0.85rem; font-weight: 500;
-    border-left: 3px solid;
-    backdrop-filter: blur(10px);
-    animation: toastIn 0.3s ease;
-    max-width: 320px;
-  }
-  .toast.success { background: rgba(76,175,125,0.12); border-color: var(--success); color: var(--success); }
-  .toast.error { background: rgba(224,82,82,0.12); border-color: var(--danger); color: var(--danger); }
-  .toast.info { background: rgba(201,168,76,0.1); border-color: var(--gold); color: var(--gold); }
-  @keyframes toastIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+/* ADMIN */
+#admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:10001;align-items:center;justify-content:center}
+#admin-overlay.open{display:flex}
+.admin-login-box{background:var(--surface-el);border:1px solid var(--border);border-radius:var(--radius);padding:48px;max-width:420px;width:90%;text-align:center}
+.admin-login-box h2{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.6rem;margin-bottom:8px}
+.admin-login-box p{font-size:.82rem;color:var(--text-sec);margin-bottom:28px}
+.admin-dashboard{display:none;position:fixed;inset:0;background:var(--bg);z-index:10001;overflow-y:auto}
+.admin-dashboard.open{display:block}
+.admin-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.admin-header h1{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.3rem}
+.admin-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 32px;background:var(--surface);overflow-x:auto}
+.admin-tab{padding:14px 22px;cursor:pointer;font-size:.82rem;font-weight:500;letter-spacing:.05em;color:var(--text-sec);border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s}
+.admin-tab:hover{color:var(--text)}
+.admin-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.admin-content{padding:32px;max-width:1200px;margin:0 auto}
+.admin-panel{display:none}
+.admin-panel.active{display:block}
+.admin-card{background:var(--surface-el);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.admin-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.admin-card-header h3{font-family:'Playfair Display',serif;font-size:1.1rem}
 
-  /* ── ADMIN MODAL ── */
-  #admin-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.92); z-index: 10001;
-    align-items: center; justify-content: center; flex-direction: column;
-  }
-  #admin-overlay.open { display: flex; }
-  .admin-login-box {
-    background: var(--surface-el); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 48px; max-width: 420px; width: 90%;
-    text-align: center;
-  }
-  .admin-login-box h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.6rem; margin-bottom: 8px; }
-  .admin-login-box p { font-size: 0.82rem; color: var(--text-sec); margin-bottom: 28px; }
-  .admin-dashboard {
-    display: none; position: fixed; inset: 0;
-    background: var(--bg); z-index: 10001;
-    overflow-y: auto;
-  }
-  .admin-dashboard.open { display: block; }
-  .admin-header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 16px 32px; display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 10;
-  }
-  .admin-header h1 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.3rem; }
-  .admin-tabs {
-    display: flex; gap: 0; border-bottom: 1px solid var(--border);
-    padding: 0 32px; background: var(--surface);
-    overflow-x: auto;
-  }
-  .admin-tab {
-    padding: 14px 24px; cursor: pointer; font-size: 0.82rem;
-    font-weight: 500; letter-spacing: 0.05em; color: var(--text-sec);
-    border-bottom: 2px solid transparent; white-space: nowrap;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .admin-tab:hover { color: var(--text); }
-  .admin-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-  .admin-content { padding: 32px; max-width: 1100px; margin: 0 auto; }
-  .admin-panel { display: none; }
-  .admin-panel.active { display: block; }
-  .admin-card {
-    background: var(--surface-el); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
-  }
-  .admin-card-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-  }
-  .admin-card-header h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-  th { text-align: left; padding: 10px 12px; color: var(--text-sec); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-  td { padding: 12px; border-bottom: 1px solid rgba(201,168,76,0.06); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
-  .toggle-switch input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider {
-    position: absolute; inset: 0; background: var(--surface);
-    border-radius: 22px; border: 1px solid var(--border);
-    cursor: pointer; transition: background 0.2s;
-  }
-  .toggle-slider::before {
-    content: ''; position: absolute;
-    width: 16px; height: 16px; left: 2px; top: 2px;
-    background: var(--text-sec); border-radius: 50%; transition: transform 0.2s, background 0.2s;
-  }
-  .toggle-switch input:checked + .toggle-slider { background: rgba(76,175,125,0.2); border-color: var(--success); }
-  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); background: var(--success); }
-  .btn-sm {
-    padding: 6px 14px; border-radius: 4px; font-size: 0.75rem;
-    font-weight: 500; cursor: pointer; border: 1px solid;
-    transition: all 0.2s;
-  }
-  .btn-edit { border-color: var(--border-h); color: var(--gold); background: rgba(201,168,76,0.06); }
-  .btn-edit:hover { background: rgba(201,168,76,0.15); }
-  .btn-del { border-color: rgba(224,82,82,0.4); color: var(--danger); background: rgba(224,82,82,0.06); }
-  .btn-del:hover { background: rgba(224,82,82,0.15); }
-  .btn-success { border-color: rgba(76,175,125,0.4); color: var(--success); background: rgba(76,175,125,0.06); }
-  .status-badge {
-    padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 500;
-  }
-  .status-pending { background: rgba(201,168,76,0.12); color: var(--gold); }
-  .status-confirmed { background: rgba(76,175,125,0.12); color: var(--success); }
-  .status-cancelled { background: rgba(224,82,82,0.12); color: var(--danger); }
+/* DASHBOARD STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center}
+.stat-icon{font-size:1.4rem;margin-bottom:8px}
+.stat-val{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold)}
+.stat-label{font-size:.72rem;letter-spacing:.1em;color:var(--text-sec);text-transform:uppercase;margin-top:4px}
+.admin-alert{background:rgba(201,168,76,.06);border:1px solid var(--border-h);border-radius:8px;padding:16px;margin-bottom:20px;font-size:.85rem;color:var(--gold)}
 
-  /* ── MODAL ── */
-  .modal {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.8); z-index: 20000;
-    align-items: center; justify-content: center; padding: 24px;
-  }
-  .modal.open { display: flex; }
-  .modal-box {
-    background: var(--surface-el); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px;
-    width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
-  }
-  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .modal-header h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; }
-  .modal-close { background: none; border: none; color: var(--text-sec); font-size: 1.4rem; cursor: pointer; }
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;padding:10px 12px;color:var(--text-sec);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:11px 12px;border-bottom:1px solid rgba(201,168,76,.06);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr.expired-row{background:rgba(224,169,82,.04)}
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
-    nav { padding: 16px 24px; }
-    nav.scrolled { padding: 12px 24px; }
-    .nav-links { display: none; }
-    .hamburger { display: flex; }
-    section, #calculator, #booking, #why, #faq, #testimonials { padding: 60px 24px; }
-    footer { padding: 48px 24px 24px; }
-    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-    .form-grid { grid-template-columns: 1fr; }
-    .calc-card, .booking-card { padding: 28px 20px; }
-    .admin-content { padding: 20px 16px; }
-    .admin-header { padding: 14px 16px; }
-  }
-  @media (max-width: 480px) {
-    .hero-ctas { flex-direction: column; align-items: stretch; }
-    .btn-gold, .btn-outline { text-align: center; }
-    table { font-size: 0.78rem; }
-    th, td { padding: 8px 6px; }
-  }
+/* TOGGLE */
+.toggle-switch{position:relative;display:inline-block;width:40px;height:22px}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--surface);border-radius:22px;border:1px solid var(--border);cursor:pointer;transition:background .2s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:var(--text-sec);border-radius:50%;transition:transform .2s,background .2s}
+.toggle-switch input:checked+.toggle-slider{background:rgba(76,175,125,.2);border-color:var(--success)}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(18px);background:var(--success)}
+
+/* BUTTONS */
+.btn-sm{padding:5px 12px;border-radius:4px;font-size:.73rem;font-weight:500;cursor:pointer;border:1px solid;transition:all .2s}
+.btn-edit{border-color:var(--border-h);color:var(--gold);background:rgba(201,168,76,.06)}
+.btn-edit:hover{background:rgba(201,168,76,.15)}
+.btn-del{border-color:rgba(224,82,82,.4);color:var(--danger);background:rgba(224,82,82,.06)}
+.btn-del:hover{background:rgba(224,82,82,.15)}
+.btn-success{border-color:rgba(76,175,125,.4);color:var(--success);background:rgba(76,175,125,.06)}
+.btn-success:hover{background:rgba(76,175,125,.15)}
+.btn-warn{border-color:rgba(224,169,82,.4);color:var(--warn);background:rgba(224,169,82,.06)}
+.btn-warn:hover{background:rgba(224,169,82,.15)}
+
+/* SEARCH/FILTER BAR (admin) */
+.admin-filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end}
+.admin-filter-bar input,.admin-filter-bar select{padding:8px 12px;font-size:.82rem;border-radius:4px;flex:1;min-width:140px}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:20000;align-items:center;justify-content:center;padding:24px}
+.modal.open{display:flex}
+.modal-box{background:var(--surface-el);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.modal-header h3{font-family:'Playfair Display',serif;font-size:1.2rem}
+.modal-close{background:none;border:none;color:var(--text-sec);font-size:1.4rem;cursor:pointer}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:16px 24px}
+  nav.scrolled{padding:12px 24px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  section,#calculator,#booking,#why,#faq,#testimonials,#track,#reviews{padding:60px 24px}
+  footer{padding:48px 24px 24px}
+  .footer-grid{grid-template-columns:1fr;gap:32px}
+  .form-grid{grid-template-columns:1fr}
+  .calc-card,.booking-card,.track-card{padding:24px 18px}
+  .admin-content{padding:16px}
+  .admin-header{padding:12px 16px}
+  .track-input-row{flex-direction:column}
+  .confirm-actions{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .hero-ctas{flex-direction:column;align-items:stretch}
+  .btn-gold,.btn-outline{text-align:center}
+  table{font-size:.76rem}
+  th,td{padding:8px 5px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
@@ -547,6 +308,12 @@
   <div class="loader-text">LUXEDRIVE</div>
 </div>
 
+<!-- FLOATING WA BUTTON -->
+<button class="float-wa" onclick="openWhatsApp()" title="Chat with us">
+  <span class="float-wa-label">Chat with us</span>
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.116 1.524 5.849L0 24l6.348-1.504A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818c-2.014 0-3.887-.546-5.492-1.493l-.394-.234-4.083.968.984-4.004-.256-.41A9.793 9.793 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+</button>
+
 <!-- NAVBAR -->
 <nav id="navbar">
   <div class="nav-logo" onclick="scrollToSection('hero')">LuxeDrive</div>
@@ -554,12 +321,11 @@
     <li><a href="#fleet">Fleet</a></li>
     <li><a href="#calculator">Estimate</a></li>
     <li><a href="#booking">Book Now</a></li>
+    <li><a href="#track">Track</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#admin" class="admin-link">Admin</a></li>
   </ul>
-  <div class="hamburger" onclick="toggleMobile()">
-    <span></span><span></span><span></span>
-  </div>
+  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
 </nav>
 
 <!-- MOBILE MENU -->
@@ -568,6 +334,7 @@
   <a href="#fleet" onclick="toggleMobile()">Fleet</a>
   <a href="#calculator" onclick="toggleMobile()">Estimate</a>
   <a href="#booking" onclick="toggleMobile()">Book Now</a>
+  <a href="#track" onclick="toggleMobile()">Track Booking</a>
   <a href="#contact" onclick="toggleMobile()">Contact</a>
   <a href="#admin" onclick="toggleMobile()">Admin</a>
 </div>
@@ -582,10 +349,7 @@
     <a href="#booking" class="btn-gold">Book a Ride →</a>
     <a href="#fleet" class="btn-outline">View Fleet</a>
   </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span>SCROLL</span>
-  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div><span>SCROLL</span></div>
 </div>
 
 <!-- FLEET -->
@@ -600,47 +364,32 @@
     <button class="filter-btn" data-cat="SUV">SUV</button>
   </div>
   <div class="cars-grid" id="cars-grid"></div>
+  <div class="empty-fleet" id="empty-fleet">
+    <div class="empty-fleet-icon">🚗</div>
+    <h3>No cars available right now</h3>
+    <p>Please check back later or reach out to us directly.</p>
+    <button class="btn-gold" onclick="openWhatsApp()">📞 Contact on WhatsApp</button>
+  </div>
 </section>
 
 <!-- CALCULATOR -->
-<div id="calculator">
-  <section style="padding:0; max-width:760px; margin:0 auto;">
+<div id="calculator" style="padding:80px 48px;background:var(--surface)">
+  <section style="padding:0;max-width:760px;margin:0 auto 0">
     <div class="section-eyebrow">Fare Estimator</div>
     <h2 class="section-title">Estimate Your <span>Fare</span></h2>
   </section>
   <div class="calc-card">
     <div class="form-grid">
-      <div class="form-group">
-        <label>Pickup Location</label>
-        <input type="text" id="calc-pickup" placeholder="Enter pickup city or area">
-      </div>
-      <div class="form-group">
-        <label>Drop Location</label>
-        <input type="text" id="calc-drop" placeholder="Enter destination">
-      </div>
-      <div class="form-group">
-        <label>Estimated Distance (km)</label>
-        <input type="number" id="calc-km" placeholder="e.g. 120" min="1" oninput="calcPrice()">
-      </div>
-      <div class="form-group">
-        <label>Number of Days</label>
-        <input type="number" id="calc-days" placeholder="e.g. 1" min="1" value="1" oninput="calcPrice()">
-      </div>
-      <div class="form-group">
-        <label>Select Car</label>
-        <select id="calc-car" onchange="calcPrice()">
-          <option value="">— Choose a car —</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Travel Date</label>
-        <input type="date" id="calc-date">
-      </div>
-      <div class="form-group full">
-        <label>Payment Method</label>
+      <div class="form-group"><label>Pickup Location</label><input type="text" id="calc-pickup" placeholder="Enter pickup city or area"></div>
+      <div class="form-group"><label>Drop Location</label><input type="text" id="calc-drop" placeholder="Enter destination"></div>
+      <div class="form-group"><label>Estimated Distance (km)</label><input type="number" id="calc-km" placeholder="e.g. 120" min="1" oninput="calcPrice()"></div>
+      <div class="form-group"><label>Number of Days</label><input type="number" id="calc-days" placeholder="e.g. 1" min="1" value="1" oninput="calcPrice()"></div>
+      <div class="form-group"><label>Select Car</label><select id="calc-car" onchange="calcPrice()"><option value="">— Choose a car —</option></select></div>
+      <div class="form-group"><label>Travel Date</label><input type="date" id="calc-date"></div>
+      <div class="form-group full"><label>Payment Method</label>
         <div class="payment-toggle">
-          <button class="pay-btn active" onclick="selectPayCalc('Cash', this)">💵 Cash</button>
-          <button class="pay-btn" onclick="selectPayCalc('UPI', this)">📱 UPI</button>
+          <button class="pay-btn active" onclick="selectPayCalc('Cash',this)">💵 Cash</button>
+          <button class="pay-btn" onclick="selectPayCalc('UPI',this)">📱 UPI</button>
         </div>
       </div>
     </div>
@@ -651,65 +400,35 @@
       <div class="pb-total"><span>Estimated Total</span><span id="pb-total">₹ 0</span></div>
       <p class="pb-note">* Final fare may vary based on actual distance and route conditions.</p>
     </div>
-    <button class="btn-gold" style="width:100%;margin-top:20px;padding:14px;" onclick="proceedToBook()">Proceed to Book →</button>
+    <button class="btn-gold" style="width:100%;margin-top:20px;padding:14px" onclick="proceedToBook()">Proceed to Book →</button>
   </div>
 </div>
 
 <!-- BOOKING FORM -->
-<div id="booking" style="padding:80px 48px;">
-  <section style="padding:0; max-width:760px; margin:0 auto 0;">
+<div id="booking" style="padding:80px 48px">
+  <section style="padding:0;max-width:760px;margin:0 auto">
     <div class="section-eyebrow">Reserve Your Car</div>
     <h2 class="section-title">Book Your <span>Ride</span></h2>
   </section>
   <div class="booking-card">
-    <div class="form-grid" id="booking-form">
-      <div class="form-group">
-        <label>Full Name *</label>
-        <input type="text" id="b-name" placeholder="Your full name">
-      </div>
-      <div class="form-group">
-        <label>Phone Number *</label>
-        <input type="tel" id="b-phone" placeholder="10-digit mobile number" maxlength="10">
-      </div>
-      <div class="form-group full">
-        <label>Pickup Address *</label>
-        <textarea id="b-pickup" placeholder="Full pickup address or landmark"></textarea>
-      </div>
-      <div class="form-group full">
-        <label>Drop Address *</label>
-        <textarea id="b-drop" placeholder="Full destination address or landmark"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Pickup Date & Time *</label>
-        <input type="datetime-local" id="b-datetime">
-      </div>
-      <div class="form-group">
-        <label>Estimated Distance (km) *</label>
-        <input type="number" id="b-km" placeholder="e.g. 120" min="1" oninput="calcBookingPrice()">
-      </div>
-      <div class="form-group">
-        <label>Select Car *</label>
-        <select id="b-car" onchange="calcBookingPrice()">
-          <option value="">— Choose a car —</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Number of Days *</label>
-        <input type="number" id="b-days" placeholder="1" min="1" value="1" oninput="calcBookingPrice()">
-      </div>
-      <div class="form-group full">
-        <label>Special Instructions</label>
-        <textarea id="b-notes" placeholder="Any special requirements, luggage info, preferences…"></textarea>
-      </div>
-      <div class="form-group full">
-        <label>Payment Method *</label>
+    <div class="form-grid">
+      <div class="form-group"><label>Full Name *</label><input type="text" id="b-name" placeholder="Your full name"></div>
+      <div class="form-group"><label>Phone Number *</label><input type="tel" id="b-phone" placeholder="98765 43210" maxlength="11" oninput="formatPhone(this)"></div>
+      <div class="form-group full"><label>Pickup Address *</label><textarea id="b-pickup" placeholder="Full pickup address or landmark"></textarea></div>
+      <div class="form-group full"><label>Drop Address *</label><textarea id="b-drop" placeholder="Full destination address or landmark"></textarea></div>
+      <div class="form-group"><label>Pickup Date & Time *</label><input type="datetime-local" id="b-datetime"></div>
+      <div class="form-group"><label>Estimated Distance (km) *</label><input type="number" id="b-km" placeholder="e.g. 120" min="1" oninput="calcBookingPrice()"></div>
+      <div class="form-group"><label>Select Car *</label><select id="b-car" onchange="calcBookingPrice()"><option value="">— Choose a car —</option></select></div>
+      <div class="form-group"><label>Number of Days *</label><input type="number" id="b-days" placeholder="1" min="1" value="1" oninput="calcBookingPrice()"></div>
+      <div class="form-group full"><label>Special Instructions</label><textarea id="b-notes" placeholder="Any special requirements, luggage info, preferences…"></textarea></div>
+      <div class="form-group full"><label>Payment Method *</label>
         <div class="payment-toggle">
-          <button class="pay-btn active" onclick="selectPayBook('Cash', this)">💵 Cash</button>
-          <button class="pay-btn" onclick="selectPayBook('UPI', this)">📱 UPI</button>
+          <button class="pay-btn active" onclick="selectPayBook('Cash',this)">💵 Cash</button>
+          <button class="pay-btn" onclick="selectPayBook('UPI',this)">📱 UPI</button>
         </div>
       </div>
     </div>
-    <div class="price-breakdown" style="margin-top:20px;">
+    <div class="price-breakdown" style="margin-top:20px">
       <div class="pb-row"><span>Distance Charge</span><span id="bb-dist">₹ 0</span></div>
       <div class="pb-row"><span>Driver Charge</span><span id="bb-driver">₹ 0</span></div>
       <hr class="pb-divider">
@@ -719,13 +438,30 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.116 1.524 5.849L0 24l6.348-1.504A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818c-2.014 0-3.887-.546-5.492-1.493l-.394-.234-4.083.968.984-4.004-.256-.41A9.793 9.793 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
       Confirm & Book via WhatsApp →
     </button>
-    <p style="text-align:center;font-size:0.75rem;color:var(--text-sec);margin-top:12px;">A booking reference will be generated and sent via WhatsApp</p>
+    <p style="text-align:center;font-size:.75rem;color:var(--text-sec);margin-top:12px">A PNR booking reference will be generated before WhatsApp opens</p>
+  </div>
+</div>
+
+<!-- TRACK BOOKING -->
+<div id="track" style="padding:80px 48px;background:var(--surface)">
+  <section style="padding:0;max-width:680px;margin:0 auto">
+    <div class="section-eyebrow">Booking Status</div>
+    <h2 class="section-title">Track Your <span>Booking</span></h2>
+  </section>
+  <div class="track-card">
+    <p style="color:var(--text-sec);font-size:.9rem;margin-bottom:20px">Enter your PNR to check booking status. Example: <code style="color:var(--gold)">LX-2411-4782-K</code></p>
+    <div class="track-input-row">
+      <input type="text" id="track-pnr" placeholder="Enter PNR — e.g. LX-2411-4782-K" style="text-transform:uppercase;letter-spacing:.08em" onkeydown="if(event.key==='Enter')checkPNR()">
+      <button class="btn-gold" style="padding:12px 24px;white-space:nowrap" onclick="checkPNR()">Check Status →</button>
+    </div>
+    <div class="booking-result-card" id="track-result"></div>
+    <p id="track-not-found" style="display:none;color:var(--danger);font-size:.85rem;margin-top:12px">No booking found with this PNR. Please check and try again.</p>
   </div>
 </div>
 
 <!-- WHY US -->
-<div id="why" style="padding:80px 48px; background: var(--surface);">
-  <section style="padding:0;max-width:1200px;margin:0 auto;">
+<div id="why" style="padding:80px 48px">
+  <section style="padding:0;max-width:1200px;margin:0 auto">
     <div class="section-eyebrow">Why LuxeDrive</div>
     <h2 class="section-title">The <span>Difference</span> You Feel</h2>
     <div class="why-grid">
@@ -739,37 +475,30 @@
   </section>
 </div>
 
-<!-- TESTIMONIALS -->
-<div id="testimonials" style="padding:80px 48px;">
-  <section style="padding:0;max-width:1200px;margin:0 auto;">
-    <div class="section-eyebrow">Client Stories</div>
-    <h2 class="section-title">What Our <span>Passengers</span> Say</h2>
-    <div class="test-grid">
-      <div class="test-card">
-        <div class="test-stars">★★★★★</div>
-        <div class="test-text">"Booked the Innova for a wedding. The driver was punctual, the car was spotless, and the whole experience was effortless. Highly recommend LuxeDrive for events."</div>
-        <div class="test-author">Ramesh Gupta</div>
-        <div class="test-role">Ranchi, Jharkhand</div>
+<!-- REVIEWS -->
+<div id="reviews" style="padding:80px 48px;background:var(--surface)">
+  <section style="padding:0;max-width:1200px;margin:0 auto">
+    <div class="section-eyebrow">Customer Reviews</div>
+    <h2 class="section-title">What Passengers <span>Say</span></h2>
+    <div class="avg-rating" id="avg-rating-display"></div>
+    <div class="review-form-card">
+      <h3>⭐ Share Your Experience</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Your Name *</label><input type="text" id="rv-name" placeholder="Your full name"></div>
+        <div class="form-group"><label>Booking PNR (optional)</label><input type="text" id="rv-pnr" placeholder="LX-XXXX-XXXX-X" style="text-transform:uppercase"></div>
+        <div class="form-group full"><label>Your Rating *</label><div class="star-rating" id="rv-stars" onmouseleave="resetStarHover()"></div></div>
+        <div class="form-group"><label>Car Used</label><select id="rv-car"><option value="">— Select car —</option></select></div>
+        <div class="form-group full"><label>Your Review *</label><textarea id="rv-text" placeholder="Tell us about your experience…"></textarea></div>
       </div>
-      <div class="test-card">
-        <div class="test-stars">★★★★★</div>
-        <div class="test-text">"Took the BMW 5 Series for an airport transfer at 4 AM. Seamless booking, no drama, and the car smelled like a luxury hotel. Will always use LuxeDrive."</div>
-        <div class="test-author">Priya Sinha</div>
-        <div class="test-role">Dhanbad, Jharkhand</div>
-      </div>
-      <div class="test-card">
-        <div class="test-stars">★★★★☆</div>
-        <div class="test-text">"Great pricing, transparent and honest. The WhatsApp booking was super convenient. Will definitely book again for my next corporate trip."</div>
-        <div class="test-author">Arvind Mehta</div>
-        <div class="test-role">Jamshedpur, Jharkhand</div>
-      </div>
+      <button class="btn-gold" style="margin-top:16px;padding:12px 28px" onclick="submitReview()">Submit Review</button>
     </div>
+    <div class="reviews-grid" id="reviews-grid"></div>
   </section>
 </div>
 
 <!-- FAQ -->
-<div id="faq" style="padding:80px 48px; background: var(--surface);">
-  <section style="padding:0;max-width:760px;margin:0 auto;">
+<div id="faq" style="padding:80px 48px">
+  <section style="padding:0;max-width:760px;margin:0 auto">
     <div class="section-eyebrow">FAQ</div>
     <h2 class="section-title">Common <span>Questions</span></h2>
     <div id="faq-list"></div>
@@ -793,6 +522,7 @@
         <li><a href="#fleet">Our Fleet</a></li>
         <li><a href="#calculator">Fare Estimator</a></li>
         <li><a href="#booking">Book a Ride</a></li>
+        <li><a href="#track">Track Booking</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#admin">Admin Panel</a></li>
       </ul>
@@ -804,25 +534,40 @@
   </div>
   <div class="footer-bottom">
     <div class="footer-copy">© 2024 LuxeDrive. All rights reserved.</div>
-    <div style="font-size:0.75rem;color:var(--text-sec);">Built with ♦ for premium travel</div>
+    <div style="font-size:.75rem;color:var(--text-sec)">Built with ♦ for premium travel</div>
   </div>
 </footer>
 
-<!-- TOAST CONTAINER -->
+<!-- TOASTS -->
 <div id="toasts"></div>
 
-<!-- ADMIN LOGIN OVERLAY -->
-<div id="admin-overlay" class="open" style="display:none;">
+<!-- BOOKING CONFIRMATION MODAL -->
+<div class="confirm-modal" id="confirm-modal">
+  <div class="confirm-box">
+    <h2>🎫 Booking Summary</h2>
+    <p style="font-size:.82rem;color:var(--text-sec);margin-bottom:8px">Save your PNR to track your booking status</p>
+    <div class="confirm-pnr" id="cm-pnr">—</div>
+    <div id="cm-rows"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn-copy" style="flex:1" onclick="copyPNRFromModal()">📋 Copy PNR</button>
+      <button class="btn-copy" style="flex:1" onclick="printSlip()">🖨️ Print Slip</button>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn-outline" style="padding:12px" onclick="closeConfirmModal()">← Edit Details</button>
+      <button class="btn-gold" style="padding:12px" onclick="finalizeBooking()">✅ Open WhatsApp →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-overlay">
   <div class="admin-login-box">
     <h2>Admin Access</h2>
     <p>Enter your password to access the LuxeDrive dashboard</p>
-    <div class="form-group" style="margin-bottom:16px;">
-      <label>Password</label>
-      <input type="password" id="admin-pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()">
-    </div>
-    <button class="btn-gold" style="width:100%;padding:12px;" onclick="adminLogin()">Login →</button>
-    <p id="admin-err" style="color:var(--danger);font-size:0.8rem;margin-top:12px;display:none;">Incorrect password. Try again.</p>
-    <button onclick="closeAdmin()" style="background:none;border:none;color:var(--text-sec);font-size:0.8rem;margin-top:12px;cursor:pointer;display:block;width:100%;">← Back to site</button>
+    <div class="form-group" style="margin-bottom:16px"><label>Password</label><input type="password" id="admin-pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+    <button class="btn-gold" style="width:100%;padding:12px" onclick="adminLogin()">Login →</button>
+    <p id="admin-err" style="color:var(--danger);font-size:.8rem;margin-top:12px;display:none">Incorrect password. Try again.</p>
+    <button onclick="closeAdminOverlay()" style="background:none;border:none;color:var(--text-sec);font-size:.8rem;margin-top:12px;cursor:pointer;display:block;width:100%">← Back to site</button>
   </div>
 </div>
 
@@ -830,32 +575,36 @@
 <div id="admin-dashboard" class="admin-dashboard">
   <div class="admin-header">
     <h1>LuxeDrive Admin</h1>
-    <div style="display:flex;gap:12px;align-items:center;">
-      <span style="font-size:0.78rem;color:var(--text-sec);">Logged in as Admin</span>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span style="font-size:.78rem;color:var(--text-sec)">Admin Panel</span>
       <button class="btn-sm btn-del" onclick="adminLogout()">Logout</button>
     </div>
   </div>
   <div class="admin-tabs">
-    <div class="admin-tab active" onclick="switchAdminTab('cars', this)">Car Management</div>
-    <div class="admin-tab" onclick="switchAdminTab('pricing', this)">Price Control</div>
-    <div class="admin-tab" onclick="switchAdminTab('bookings', this)">Booking Log</div>
-    <div class="admin-tab" onclick="switchAdminTab('settings', this)">Settings</div>
+    <div class="admin-tab" onclick="switchAdminTab('dashboard',this)">📊 Dashboard</div>
+    <div class="admin-tab active" onclick="switchAdminTab('cars',this)">🚗 Cars</div>
+    <div class="admin-tab" onclick="switchAdminTab('pricing',this)">💰 Pricing</div>
+    <div class="admin-tab" onclick="switchAdminTab('bookings',this)">📋 Bookings</div>
+    <div class="admin-tab" onclick="switchAdminTab('reviews',this)">⭐ Reviews</div>
+    <div class="admin-tab" onclick="switchAdminTab('settings',this)">⚙️ Settings</div>
   </div>
   <div class="admin-content">
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="admin-panel">
+      <div id="admin-alert-box" class="admin-alert" style="display:none"></div>
+      <div class="stat-grid" id="stat-grid"></div>
+      <div class="admin-card">
+        <div class="admin-card-header"><h3>Recent Bookings (Last 5)</h3></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>PNR</th><th>Name</th><th>Car</th><th>Total</th><th>Status</th></tr></thead><tbody id="dash-bookings-tbody"></tbody></table></div>
+      </div>
+    </div>
 
     <!-- CARS TAB -->
     <div id="tab-cars" class="admin-panel active">
       <div class="admin-card">
-        <div class="admin-card-header">
-          <h3>Fleet Management</h3>
-          <button class="btn-gold" onclick="openCarModal(null)" style="padding:8px 18px;font-size:0.8rem;">+ Add New Car</button>
-        </div>
-        <div style="overflow-x:auto;">
-          <table id="cars-table">
-            <thead><tr><th>Car</th><th>Category</th><th>₹/km</th><th>Driver/day</th><th>Seats</th><th>Available</th><th>Actions</th></tr></thead>
-            <tbody id="cars-tbody"></tbody>
-          </table>
-        </div>
+        <div class="admin-card-header"><h3>Fleet Management</h3><button class="btn-gold" onclick="openCarModal(null)" style="padding:8px 18px;font-size:.8rem">+ Add New Car</button></div>
+        <div style="overflow-x:auto"><table id="cars-table"><thead><tr><th>Car</th><th>Category</th><th>₹/km</th><th>Driver/day</th><th>Seats</th><th>Available</th><th>Actions</th></tr></thead><tbody id="cars-tbody"></tbody></table></div>
       </div>
     </div>
 
@@ -863,41 +612,39 @@
     <div id="tab-pricing" class="admin-panel">
       <div class="admin-card">
         <div class="admin-card-header"><h3>Global Surcharge</h3></div>
-        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
-          <div class="form-group" style="flex:1;min-width:160px;">
-            <label>Surcharge / Discount (%)</label>
-            <input type="number" id="surcharge-input" placeholder="e.g. 20 for +20%, -10 for -10%">
-          </div>
-          <button class="btn-gold" style="padding:10px 20px;font-size:0.82rem;" onclick="applyGlobalSurcharge()">Apply</button>
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:160px"><label>Surcharge / Discount (%)</label><input type="number" id="surcharge-input" placeholder="e.g. 20 for +20%, -10 for -10%"></div>
+          <button class="btn-gold" style="padding:10px 20px;font-size:.82rem" onclick="applyGlobalSurcharge()">Apply</button>
           <button class="btn-sm btn-edit" onclick="resetDefaultRates()">Reset to Defaults</button>
         </div>
-        <div id="surcharge-log" style="margin-top:20px;"></div>
+        <div id="surcharge-log" style="margin-top:20px"></div>
       </div>
       <div class="admin-card">
         <div class="admin-card-header"><h3>Individual Rates</h3></div>
-        <div style="overflow-x:auto;">
-          <table>
-            <thead><tr><th>Car</th><th>₹/km</th><th>Driver/day</th><th>Action</th></tr></thead>
-            <tbody id="pricing-tbody"></tbody>
-          </table>
-        </div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Car</th><th>₹/km</th><th>Driver/day</th><th>Action</th></tr></thead><tbody id="pricing-tbody"></tbody></table></div>
       </div>
     </div>
 
     <!-- BOOKINGS TAB -->
     <div id="tab-bookings" class="admin-panel">
       <div class="admin-card">
-        <div class="admin-card-header">
-          <h3>Booking Enquiries</h3>
-          <button class="btn-sm btn-edit" onclick="exportBookings()">Export as Text</button>
+        <div class="admin-card-header"><h3>Booking Enquiries</h3><button class="btn-sm btn-edit" onclick="exportBookings()">Export Text</button></div>
+        <div class="admin-filter-bar">
+          <input type="text" id="bk-search" placeholder="Search PNR, name or phone…" oninput="renderAdminBookings()">
+          <select id="bk-status" onchange="renderAdminBookings()" style="max-width:160px"><option value="">All Status</option><option>Pending</option><option>Confirmed</option><option>Cancelled</option></select>
+          <select id="bk-sort" onchange="renderAdminBookings()" style="max-width:160px"><option value="newest">Newest First</option><option value="oldest">Oldest First</option></select>
         </div>
-        <div style="overflow-x:auto;">
-          <table>
-            <thead><tr><th>Ref</th><th>Date</th><th>Customer</th><th>Phone</th><th>Car</th><th>Route</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
-            <tbody id="bookings-tbody"></tbody>
-          </table>
-        </div>
-        <p id="no-bookings" style="text-align:center;color:var(--text-sec);padding:32px;display:none;">No bookings yet. Enquiries will appear here once customers book.</p>
+        <div style="overflow-x:auto"><table><thead><tr><th>PNR</th><th>Date</th><th>Name</th><th>Phone</th><th>Car</th><th>Route</th><th>Total</th><th>Pay</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bookings-tbody"></tbody></table></div>
+        <p id="no-bookings" style="text-align:center;color:var(--text-sec);padding:32px;display:none">No bookings match your filter.</p>
+      </div>
+    </div>
+
+    <!-- REVIEWS TAB -->
+    <div id="tab-reviews" class="admin-panel">
+      <div class="admin-card">
+        <div class="admin-card-header"><h3>Review Moderation</h3><span id="reviews-pending-badge" style="font-size:.78rem;color:var(--warn)"></span></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Name</th><th>Rating</th><th>Review</th><th>Car</th><th>Date</th><th>PNR</th><th>Verified</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="reviews-tbody"></tbody></table></div>
+        <p id="no-reviews-admin" style="text-align:center;color:var(--text-sec);padding:24px;display:none">No reviews submitted yet.</p>
       </div>
     </div>
 
@@ -906,20 +653,11 @@
       <div class="admin-card">
         <div class="admin-card-header"><h3>Business Settings</h3></div>
         <div class="form-grid">
-          <div class="form-group">
-            <label>WhatsApp Number (with country code)</label>
-            <input type="text" id="set-wa" placeholder="91XXXXXXXXXX">
-          </div>
-          <div class="form-group">
-            <label>Business Name</label>
-            <input type="text" id="set-bname" placeholder="LuxeDrive">
-          </div>
+          <div class="form-group"><label>WhatsApp Number (with country code)</label><input type="text" id="set-wa" placeholder="91XXXXXXXXXX"></div>
+          <div class="form-group"><label>Business Name</label><input type="text" id="set-bname" placeholder="LuxeDrive"></div>
         </div>
-        <div class="form-group" style="margin-top:16px;">
-          <label>Change Admin Password</label>
-          <input type="password" id="set-pw" placeholder="New password (leave blank to keep current)">
-        </div>
-        <button class="btn-gold" style="margin-top:20px;padding:12px 28px;" onclick="saveSettings()">Save Settings</button>
+        <div class="form-group" style="margin-top:16px"><label>Change Admin Password</label><input type="password" id="set-pw" placeholder="New password (leave blank to keep current)"></div>
+        <button class="btn-gold" style="margin-top:20px;padding:12px 28px" onclick="saveSettings()">Save Settings</button>
       </div>
     </div>
 
@@ -929,153 +667,179 @@
 <!-- CAR MODAL -->
 <div class="modal" id="car-modal">
   <div class="modal-box">
-    <div class="modal-header">
-      <h3 id="car-modal-title">Add New Car</h3>
-      <button class="modal-close" onclick="closeCarModal()">✕</button>
-    </div>
+    <div class="modal-header"><h3 id="car-modal-title">Add New Car</h3><button class="modal-close" onclick="closeCarModal()">✕</button></div>
     <div class="form-grid">
       <div class="form-group full"><label>Car Name</label><input type="text" id="cm-name" placeholder="Toyota Innova Crysta"></div>
-      <div class="form-group">
-        <label>Category</label>
-        <select id="cm-cat">
-          <option>Economy</option><option>Premium</option><option>Luxury</option><option>SUV</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Per KM Rate (₹)</label>
-        <input type="number" id="cm-km" placeholder="16">
-      </div>
-      <div class="form-group">
-        <label>Driver Charge / Day (₹)</label>
-        <input type="number" id="cm-driver" placeholder="400">
-      </div>
-      <div class="form-group">
-        <label>Seats</label>
-        <input type="number" id="cm-seats" placeholder="5">
-      </div>
-      <div class="form-group">
-        <label>Fuel Type</label>
-        <select id="cm-fuel"><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option></select>
-      </div>
-      <div class="form-group full"><label>Image URL</label><input type="text" id="cm-img" placeholder="https://images.unsplash.com/..."></div>
-      <div class="form-group full">
-        <label>Available</label>
+      <div class="form-group"><label>Category</label><select id="cm-cat"><option>Economy</option><option>Premium</option><option>Luxury</option><option>SUV</option></select></div>
+      <div class="form-group"><label>Per KM Rate (₹)</label><input type="number" id="cm-km" placeholder="16"></div>
+      <div class="form-group"><label>Driver Charge / Day (₹)</label><input type="number" id="cm-driver" placeholder="400"></div>
+      <div class="form-group"><label>Seats</label><input type="number" id="cm-seats" placeholder="5"></div>
+      <div class="form-group"><label>Fuel Type</label><select id="cm-fuel"><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option></select></div>
+      <div class="form-group full"><label>Image URL</label><input type="text" id="cm-img" placeholder="https://images.unsplash.com/…"></div>
+      <div class="form-group full"><label>Availability</label>
         <div class="payment-toggle">
           <button class="pay-btn active" id="cm-avail-yes" onclick="setCmAvail(true)">🟢 Available</button>
           <button class="pay-btn" id="cm-avail-no" onclick="setCmAvail(false)">🔴 Unavailable</button>
         </div>
       </div>
     </div>
-    <button class="btn-gold" style="width:100%;padding:13px;margin-top:20px;" onclick="saveCar()">Save Car</button>
+    <button class="btn-gold" style="width:100%;padding:13px;margin-top:20px" onclick="saveCar()">Save Car</button>
   </div>
 </div>
 
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
-const DEFAULT_CARS = [
-  { id:1, name:"Maruti Swift Dzire", category:"Economy", image:"https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600", perKmRate:10, driverCharge:250, available:true, seats:4, fuel:"Petrol", ac:true },
-  { id:2, name:"Toyota Innova Crysta", category:"Premium", image:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600", perKmRate:16, driverCharge:400, available:true, seats:7, fuel:"Diesel", ac:true },
-  { id:3, name:"Mercedes GLC", category:"Luxury", image:"https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600", perKmRate:35, driverCharge:800, available:true, seats:5, fuel:"Petrol", ac:true },
-  { id:4, name:"Mahindra Bolero", category:"SUV", image:"https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600", perKmRate:14, driverCharge:350, available:false, seats:8, fuel:"Diesel", ac:true },
-  { id:5, name:"Honda City", category:"Economy", image:"https://images.unsplash.com/photo-1590362891991-f776e747a588?w=600", perKmRate:12, driverCharge:300, available:true, seats:5, fuel:"Petrol", ac:true },
-  { id:6, name:"BMW 5 Series", category:"Luxury", image:"https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600", perKmRate:45, driverCharge:1000, available:true, seats:5, fuel:"Petrol", ac:true }
+// ═══════════════════════════════════════════════
+// DEFAULT DATA
+// ═══════════════════════════════════════════════
+const DEFAULT_CARS=[
+  {id:1,name:"Maruti Swift Dzire",category:"Economy",image:"https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600",perKmRate:10,driverCharge:250,available:true,seats:4,fuel:"Petrol",ac:true},
+  {id:2,name:"Toyota Innova Crysta",category:"Premium",image:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600",perKmRate:16,driverCharge:400,available:true,seats:7,fuel:"Diesel",ac:true},
+  {id:3,name:"Mercedes GLC",category:"Luxury",image:"https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600",perKmRate:35,driverCharge:800,available:true,seats:5,fuel:"Petrol",ac:true},
+  {id:4,name:"Mahindra Bolero",category:"SUV",image:"https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600",perKmRate:14,driverCharge:350,available:false,seats:8,fuel:"Diesel",ac:true},
+  {id:5,name:"Honda City",category:"Economy",image:"https://images.unsplash.com/photo-1590362891991-f776e747a588?w=600",perKmRate:12,driverCharge:300,available:true,seats:5,fuel:"Petrol",ac:true},
+  {id:6,name:"BMW 5 Series",category:"Luxury",image:"https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600",perKmRate:45,driverCharge:1000,available:true,seats:5,fuel:"Petrol",ac:true}
 ];
-const DEFAULT_SETTINGS = { whatsappNumber:"918757162209", businessName:"LuxeDrive", adminPassword:"anu123" };
-const DEFAULT_FAQS = [
-  { q:"How do I confirm my booking?", a:"After submitting the form, you'll be redirected to WhatsApp with your booking details pre-filled. Send the message to complete your booking. Our team will confirm availability within minutes." },
-  { q:"Can I cancel or reschedule my ride?", a:"Yes. Contact us on WhatsApp at least 4 hours before your scheduled pickup. Cancellations within 2 hours may attract a nominal fee." },
-  { q:"Is a driver included in the price?", a:"Yes. All our vehicles come with a trained, professional driver. The driver charge shown covers the driver's daily allowance." },
-  { q:"What payment methods are accepted?", a:"We accept Cash and UPI payments. Payment is made directly to the driver at the end of your journey. No advance payment is required." },
-  { q:"Are the prices fixed or negotiable?", a:"Our rates are transparent and fixed. The estimate shown reflects the actual fare — no hidden charges or surprises." }
+const DEFAULT_SETTINGS={whatsappNumber:"91XXXXXXXXXX",businessName:"LuxeDrive",adminPassword:"anu123"};
+const DEFAULT_FAQS=[
+  {q:"How do I confirm my booking?",a:"After submitting the form, you'll be redirected to WhatsApp with your booking details pre-filled. Send the message to complete your booking. Our team will confirm availability within minutes."},
+  {q:"Can I cancel or reschedule my ride?",a:"Yes. Contact us on WhatsApp at least 4 hours before your scheduled pickup. Cancellations within 2 hours may attract a nominal fee."},
+  {q:"Is a driver included in the price?",a:"Yes. All our vehicles come with a trained, professional driver. The driver charge shown covers the driver's daily allowance."},
+  {q:"What payment methods are accepted?",a:"We accept Cash and UPI payments. Payment is made directly to the driver at the end of your journey. No advance payment is required."},
+  {q:"Are the prices fixed or negotiable?",a:"Our rates are transparent and fixed. The estimate shown reflects the actual fare — no hidden charges or surprises."}
+];
+const DEFAULT_REVIEWS=[
+  {id:1,name:"Ramesh Gupta",pnr:"",rating:5,text:"Booked the Innova for a wedding. The driver was punctual, the car was spotless, and the whole experience was effortless. Highly recommend LuxeDrive for events.",carUsed:"Toyota Innova Crysta",date:"15 Nov 2024",verified:false,approved:true,featured:true},
+  {id:2,name:"Priya Sinha",pnr:"",rating:5,text:"Took the BMW 5 Series for an airport transfer at 4 AM. Seamless booking, no drama, and the car smelled like a luxury hotel. Will always use LuxeDrive.",carUsed:"BMW 5 Series",date:"10 Nov 2024",verified:false,approved:true,featured:false},
+  {id:3,name:"Arvind Mehta",pnr:"",rating:4,text:"Great pricing, transparent and honest. The WhatsApp booking was super convenient. Will definitely book again for my next corporate trip.",carUsed:"Honda City",date:"5 Nov 2024",verified:false,approved:true,featured:false}
 ];
 
-let cars = [], settings = {}, bookings = [], calcPayMethod = 'Cash', bookPayMethod = 'Cash';
-let carModalId = null, cmAvail = true;
-let surchargeLog = JSON.parse(localStorage.getItem('luxedrive_surcharge_log') || '[]');
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let cars=[],settings={},bookings=[],reviews=[];
+let calcPayMethod='Cash',bookPayMethod='Cash';
+let carModalId=null,cmAvail=true;
+let surchargeLog=[];
+let pendingBookingData=null; // holds booking object before WhatsApp send
+let rvRating=0;
+let activeFleetFilter='All';
 
-function loadData() {
-  const c = localStorage.getItem('luxedrive_cars');
-  cars = c ? JSON.parse(c) : JSON.parse(JSON.stringify(DEFAULT_CARS));
-  const s = localStorage.getItem('luxedrive_settings');
-  settings = s ? JSON.parse(s) : { ...DEFAULT_SETTINGS };
-  const b = localStorage.getItem('luxedrive_bookings');
-  bookings = b ? JSON.parse(b) : [];
+// ═══════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════
+function loadData(){
+  const c=localStorage.getItem('luxedrive_cars');
+  cars=c?JSON.parse(c):JSON.parse(JSON.stringify(DEFAULT_CARS));
+  const s=localStorage.getItem('luxedrive_settings');
+  settings=s?JSON.parse(s):{...DEFAULT_SETTINGS};
+  const b=localStorage.getItem('luxedrive_bookings');
+  bookings=b?JSON.parse(b):[];
+  const r=localStorage.getItem('luxedrive_reviews');
+  reviews=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULT_REVIEWS));
+  surchargeLog=JSON.parse(localStorage.getItem('luxedrive_surcharge_log')||'[]');
 }
-function saveCars() { localStorage.setItem('luxedrive_cars', JSON.stringify(cars)); }
-function saveSettings() { localStorage.setItem('luxedrive_settings', JSON.stringify(settings)); }
-function saveBookings() { localStorage.setItem('luxedrive_bookings', JSON.stringify(bookings)); }
+function saveCars(){localStorage.setItem('luxedrive_cars',JSON.stringify(cars))}
+function saveBookings(){localStorage.setItem('luxedrive_bookings',JSON.stringify(bookings))}
+function saveReviews(){localStorage.setItem('luxedrive_reviews',JSON.stringify(reviews))}
+function saveSettings2(){localStorage.setItem('luxedrive_settings',JSON.stringify(settings))}
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
   loadData();
   initParticles();
   renderCars('All');
   populateCarDropdowns();
+  renderReviewCarDropdown();
   renderFAQs();
+  renderPublicReviews();
   updateFooterBusiness();
+  buildStarUI();
 
-  // Check admin hash
-  if(window.location.hash === '#admin') {
-    setTimeout(() => openAdminOverlay(), 600);
-  }
-  window.addEventListener('hashchange', () => { if(window.location.hash === '#admin') openAdminOverlay(); });
-
-  // Navbar scroll
-  window.addEventListener('scroll', () => {
-    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  if(window.location.hash==='#admin') setTimeout(()=>openAdminOverlay(),600);
+  window.addEventListener('hashchange',()=>{if(window.location.hash==='#admin')openAdminOverlay()});
+  window.addEventListener('scroll',()=>{
+    document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
   });
-
-  // Hide loader
-  setTimeout(() => {
-    const l = document.getElementById('loader');
-    l.style.opacity = '0'; setTimeout(() => l.style.display = 'none', 600);
-  }, 1200);
+  setTimeout(()=>{const l=document.getElementById('loader');l.style.opacity='0';setTimeout(()=>l.style.display='none',600)},1200);
 });
 
-// ─── PARTICLES ──────────────────────────────────────────────────────────────
-function initParticles() {
-  const canvas = document.getElementById('particles-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [];
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  resize(); window.addEventListener('resize', resize);
-  for(let i=0;i<80;i++) particles.push({ x:Math.random()*1200, y:Math.random()*800, vx:(Math.random()-0.5)*0.2, vy:(Math.random()-0.5)*0.2, r:Math.random()*1.5+0.4, a:Math.random()*0.5+0.1 });
-  function draw() {
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+function initParticles(){
+  const canvas=document.getElementById('particles-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,ps=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  for(let i=0;i<80;i++)ps.push({x:Math.random()*1200,y:Math.random()*800,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.4,a:Math.random()*.5+.1});
+  function draw(){
     ctx.clearRect(0,0,W,H);
-    particles.forEach(p => {
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(201,168,76,${p.a})`; ctx.fill();
-    });
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${p.a})`;ctx.fill()});
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// ─── UTILS ──────────────────────────────────────────────────────────────────
-function fmt(n) { return '₹ ' + n.toLocaleString('en-IN'); }
-function toast(msg, type='info') {
-  const t = document.createElement('div');
-  t.className = 'toast ' + type; t.textContent = msg;
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function fmt(n){return'₹ '+n.toLocaleString('en-IN')}
+function toast(msg,type='info'){
+  const t=document.createElement('div');
+  t.className='toast '+type;t.textContent=msg;
   document.getElementById('toasts').appendChild(t);
-  setTimeout(() => t.remove(), 4000);
+  setTimeout(()=>t.remove(),4500);
 }
-function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior:'smooth' }); }
-function toggleMobile() { document.getElementById('mobile-menu').classList.toggle('open'); }
+function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+function toggleMobile(){document.getElementById('mobile-menu').classList.toggle('open')}
+function openWhatsApp(){window.open(`https://wa.me/${settings.whatsappNumber||'91XXXXXXXXXX'}`,'_blank')}
 
-// ─── CARS ────────────────────────────────────────────────────────────────────
-function renderCars(filter) {
-  const grid = document.getElementById('cars-grid');
-  const filtered = filter === 'All' ? cars : cars.filter(c => c.category === filter);
-  grid.innerHTML = filtered.map(car => `
-    <div class="car-card ${car.available ? '' : 'unavailable'}">
+// PNR Generator
+function generatePNR(){
+  const now=new Date();
+  const yy=String(now.getFullYear()).slice(2);
+  const mm=String(now.getMonth()+1).padStart(2,'0');
+  const rand=Math.floor(1000+Math.random()*9000);
+  const letters='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const ch=letters[Math.floor(Math.random()*letters.length)];
+  const raw=`LX${yy}${mm}${rand}${ch}`;
+  return raw; // store as raw, display formatted
+}
+function formatPNR(raw){
+  // LX2411 4782K → LX-2411-4782-K
+  if(!raw)return'—';
+  const m=raw.match(/^(LX)(\d{4})(\d{4})([A-Z])$/);
+  return m?`${m[1]}-${m[2]}-${m[3]}-${m[4]}`:raw;
+}
+
+// Phone auto-format
+function formatPhone(el){
+  let v=el.value.replace(/\D/g,'').slice(0,10);
+  if(v.length>5)v=v.slice(0,5)+' '+v.slice(5);
+  el.value=v;
+}
+
+// ═══════════════════════════════════════════════
+// FLEET
+// ═══════════════════════════════════════════════
+function renderCars(filter){
+  activeFleetFilter=filter;
+  const grid=document.getElementById('cars-grid');
+  const emptyEl=document.getElementById('empty-fleet');
+  const allAvail=cars.filter(c=>c.available);
+  if(allAvail.length===0){grid.innerHTML='';emptyEl.style.display='block';return}
+  emptyEl.style.display='none';
+  const filtered=filter==='All'?cars:cars.filter(c=>c.category===filter);
+  grid.innerHTML=filtered.map(car=>`
+    <div class="car-card ${car.available?'':'unavailable'}">
       <img class="car-img" src="${car.image}" alt="${car.name}" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600'" loading="lazy">
       <div class="car-body">
         <div class="car-badges">
           <span class="badge badge-cat">${car.category}</span>
-          <span class="badge ${car.available ? 'badge-avail' : 'badge-unavail'}">${car.available ? '🟢 Available' : '🔴 Unavailable'}</span>
+          <span class="badge ${car.available?'badge-avail':'badge-unavail'}">${car.available?'🟢 Available':'🔴 Unavailable'}</span>
         </div>
         <div class="car-name">${car.name}</div>
         <div class="car-specs">
@@ -1087,135 +851,187 @@ function renderCars(filter) {
           <div><div class="car-price-label">Per KM</div><div class="car-price-val">₹${car.perKmRate}</div></div>
           <div style="text-align:right"><div class="car-price-label">Driver/day</div><div class="car-price-val">₹${car.driverCharge}</div></div>
         </div>
-        <button class="car-book-btn" ${!car.available ? 'disabled' : ''} onclick="selectCarAndBook(${car.id})">
-          ${car.available ? 'Book This Car →' : 'Currently Unavailable'}
+        <button class="car-book-btn" ${!car.available?'disabled':''} onclick="selectCarAndBook(${car.id})">
+          ${car.available?'Book This Car →':'Currently Unavailable'}
         </button>
       </div>
     </div>
-  `).join('') || '<p style="color:var(--text-sec);text-align:center;padding:40px;">No cars in this category.</p>';
+  `).join('')||'<p style="color:var(--text-sec);text-align:center;padding:40px;grid-column:1/-1">No cars in this category.</p>';
 }
 
-document.getElementById('filter-bar').addEventListener('click', e => {
-  const btn = e.target.closest('.filter-btn');
-  if(!btn) return;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCars(btn.dataset.cat);
+document.getElementById('filter-bar').addEventListener('click',e=>{
+  const btn=e.target.closest('.filter-btn');if(!btn)return;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderCars(btn.dataset.cat);
 });
 
-function populateCarDropdowns() {
-  const avail = cars.filter(c => c.available);
-  ['calc-car','b-car'].forEach(id => {
-    const sel = document.getElementById(id);
-    const prev = sel.value;
-    sel.innerHTML = '<option value="">— Choose a car —</option>' +
-      avail.map(c => `<option value="${c.id}">${c.name} (${c.category}) — ₹${c.perKmRate}/km</option>`).join('');
-    if(prev) sel.value = prev;
+function populateCarDropdowns(){
+  const avail=cars.filter(c=>c.available);
+  ['calc-car','b-car'].forEach(id=>{
+    const sel=document.getElementById(id);const prev=sel.value;
+    sel.innerHTML='<option value="">— Choose a car —</option>'+avail.map(c=>`<option value="${c.id}">${c.name} (${c.category}) — ₹${c.perKmRate}/km</option>`).join('');
+    if(prev)sel.value=prev;
   });
 }
-
-function selectCarAndBook(carId) {
-  document.getElementById('b-car').value = carId;
-  document.getElementById('booking').scrollIntoView({ behavior:'smooth' });
+function renderReviewCarDropdown(){
+  const sel=document.getElementById('rv-car');
+  sel.innerHTML='<option value="">— Select car —</option>'+cars.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+}
+function selectCarAndBook(carId){
+  document.getElementById('b-car').value=carId;
+  document.getElementById('booking').scrollIntoView({behavior:'smooth'});
   calcBookingPrice();
-  toast('Car selected! Fill in your details below.', 'info');
+  toast('Car selected! Fill in your details below.','info');
 }
 
-// ─── CALCULATOR ──────────────────────────────────────────────────────────────
-function selectPayCalc(method, btn) {
-  calcPayMethod = method;
-  document.querySelectorAll('#calculator .pay-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+// ═══════════════════════════════════════════════
+// CALCULATOR
+// ═══════════════════════════════════════════════
+function selectPayCalc(m,btn){calcPayMethod=m;document.querySelectorAll('#calculator .pay-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function calcPrice(){
+  const km=parseFloat(document.getElementById('calc-km').value)||0;
+  const days=parseFloat(document.getElementById('calc-days').value)||1;
+  const car=cars.find(c=>c.id==document.getElementById('calc-car').value);
+  if(!car){['pb-dist','pb-driver','pb-total'].forEach(id=>document.getElementById(id).textContent='₹ 0');return}
+  const d=km*car.perKmRate,drv=days*car.driverCharge;
+  document.getElementById('pb-dist').textContent=fmt(d);
+  document.getElementById('pb-driver').textContent=fmt(drv);
+  document.getElementById('pb-total').textContent=fmt(d+drv);
 }
-function calcPrice() {
-  const km = parseFloat(document.getElementById('calc-km').value) || 0;
-  const days = parseFloat(document.getElementById('calc-days').value) || 1;
-  const carId = document.getElementById('calc-car').value;
-  const car = cars.find(c => c.id == carId);
-  if(!car) { ['pb-dist','pb-driver','pb-total'].forEach(id => document.getElementById(id).textContent = '₹ 0'); return; }
-  const dist = km * car.perKmRate;
-  const drv = days * car.driverCharge;
-  document.getElementById('pb-dist').textContent = fmt(dist);
-  document.getElementById('pb-driver').textContent = fmt(drv);
-  document.getElementById('pb-total').textContent = fmt(dist + drv);
-}
-function proceedToBook() {
-  const carId = document.getElementById('calc-car').value;
-  const km = document.getElementById('calc-km').value;
-  const days = document.getElementById('calc-days').value;
-  const date = document.getElementById('calc-date').value;
-  const pickup = document.getElementById('calc-pickup').value;
-  const drop = document.getElementById('calc-drop').value;
-  if(carId) document.getElementById('b-car').value = carId;
-  if(km) document.getElementById('b-km').value = km;
-  if(days) document.getElementById('b-days').value = days;
-  if(date) document.getElementById('b-datetime').value = date + 'T00:00';
-  if(pickup) document.getElementById('b-pickup').value = pickup;
-  if(drop) document.getElementById('b-drop').value = drop;
-  document.getElementById('booking').scrollIntoView({ behavior:'smooth' });
+function proceedToBook(){
+  const carId=document.getElementById('calc-car').value;
+  const km=document.getElementById('calc-km').value;
+  const days=document.getElementById('calc-days').value;
+  const date=document.getElementById('calc-date').value;
+  const pickup=document.getElementById('calc-pickup').value;
+  const drop=document.getElementById('calc-drop').value;
+  if(carId)document.getElementById('b-car').value=carId;
+  if(km)document.getElementById('b-km').value=km;
+  if(days)document.getElementById('b-days').value=days;
+  if(date)document.getElementById('b-datetime').value=date+'T00:00';
+  if(pickup)document.getElementById('b-pickup').value=pickup;
+  if(drop)document.getElementById('b-drop').value=drop;
+  document.getElementById('booking').scrollIntoView({behavior:'smooth'});
   calcBookingPrice();
 }
 
-// ─── BOOKING ──────────────────────────────────────────────────────────────────
-function selectPayBook(method, btn) {
-  bookPayMethod = method;
-  document.querySelectorAll('#booking .pay-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+// ═══════════════════════════════════════════════
+// BOOKING FORM
+// ═══════════════════════════════════════════════
+function selectPayBook(m,btn){bookPayMethod=m;document.querySelectorAll('#booking .pay-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function calcBookingPrice(){
+  const km=parseFloat(document.getElementById('b-km').value)||0;
+  const days=parseFloat(document.getElementById('b-days').value)||1;
+  const car=cars.find(c=>c.id==document.getElementById('b-car').value);
+  if(!car){['bb-dist','bb-driver','bb-total'].forEach(id=>document.getElementById(id).textContent='₹ 0');return}
+  const d=km*car.perKmRate,drv=days*car.driverCharge;
+  document.getElementById('bb-dist').textContent=fmt(d);
+  document.getElementById('bb-driver').textContent=fmt(drv);
+  document.getElementById('bb-total').textContent=fmt(d+drv);
 }
-function calcBookingPrice() {
-  const km = parseFloat(document.getElementById('b-km').value) || 0;
-  const days = parseFloat(document.getElementById('b-days').value) || 1;
-  const carId = document.getElementById('b-car').value;
-  const car = cars.find(c => c.id == carId);
-  if(!car) { ['bb-dist','bb-driver','bb-total'].forEach(id => document.getElementById(id).textContent = '₹ 0'); return; }
-  const dist = km * car.perKmRate;
-  const drv = days * car.driverCharge;
-  document.getElementById('bb-dist').textContent = fmt(dist);
-  document.getElementById('bb-driver').textContent = fmt(drv);
-  document.getElementById('bb-total').textContent = fmt(dist + drv);
-}
+function validatePhone(ph){return/^[6-9]\d{9}$/.test(ph.replace(/\s/g,''))}
 
-function validatePhone(ph) { return /^[6-9]\d{9}$/.test(ph); }
-
-function submitBooking() {
-  const name = document.getElementById('b-name').value.trim();
-  const phone = document.getElementById('b-phone').value.trim();
-  const pickup = document.getElementById('b-pickup').value.trim();
-  const drop = document.getElementById('b-drop').value.trim();
-  const datetime = document.getElementById('b-datetime').value;
-  const km = parseFloat(document.getElementById('b-km').value);
-  const carId = document.getElementById('b-car').value;
-  const days = parseFloat(document.getElementById('b-days').value) || 1;
-  const notes = document.getElementById('b-notes').value.trim();
-  if(!name) { toast('Please enter your full name.', 'error'); return; }
-  if(!validatePhone(phone)) { toast('Please enter a valid 10-digit Indian phone number.', 'error'); return; }
-  if(!pickup) { toast('Please enter your pickup address.', 'error'); return; }
-  if(!drop) { toast('Please enter your drop address.', 'error'); return; }
-  if(!datetime) { toast('Please select pickup date and time.', 'error'); return; }
-  if(!km || km < 1) { toast('Please enter a valid distance.', 'error'); return; }
-  if(!carId) { toast('Please select a car.', 'error'); return; }
-  const car = cars.find(c => c.id == carId);
-  const distCharge = km * car.perKmRate;
-  const drvCharge = days * car.driverCharge;
-  const total = distCharge + drvCharge;
-  const ref = 'LX-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(bookings.length+1).padStart(3,'0');
-  const booking = {
-    ref, name, phone, pickup, drop, datetime, km, days, carId,
-    carName: car.name, carCategory: car.category,
-    distanceCharge: distCharge, driverCharge: drvCharge, total,
-    payment: bookPayMethod, notes, status:'Pending',
-    submittedAt: new Date().toISOString()
+function submitBooking(){
+  const name=document.getElementById('b-name').value.trim();
+  const phone=document.getElementById('b-phone').value.replace(/\s/g,'').trim();
+  const pickup=document.getElementById('b-pickup').value.trim();
+  const drop=document.getElementById('b-drop').value.trim();
+  const datetime=document.getElementById('b-datetime').value;
+  const km=parseFloat(document.getElementById('b-km').value);
+  const carId=document.getElementById('b-car').value;
+  const days=parseFloat(document.getElementById('b-days').value)||1;
+  const notes=document.getElementById('b-notes').value.trim();
+  if(!name){toast('Please enter your full name.','error');return}
+  if(!validatePhone(phone)){toast('Please enter a valid 10-digit Indian phone number.','error');return}
+  if(!pickup){toast('Please enter your pickup address.','error');return}
+  if(!drop){toast('Please enter your drop address.','error');return}
+  if(!datetime){toast('Please select pickup date and time.','error');return}
+  if(!km||km<1){toast('Please enter a valid distance.','error');return}
+  if(!carId){toast('Please select a car.','error');return}
+  const car=cars.find(c=>c.id==carId);
+  const distCharge=km*car.perKmRate;
+  const drvCharge=days*car.driverCharge;
+  const total=distCharge+drvCharge;
+  const pnr=generatePNR();
+  pendingBookingData={
+    pnr,ref:formatPNR(pnr),name,phone,pickup,drop,datetime,km,days,carId:parseInt(carId),
+    carName:car.name,carCategory:car.category,
+    distanceCharge:distCharge,driverCharge:drvCharge,total,
+    payment:bookPayMethod,notes,status:'Pending',
+    submittedAt:new Date().toISOString()
   };
-  bookings.push(booking); saveBookings();
-  buildWhatsAppMessage(booking);
-  toast(`Booking ${ref} submitted! Opening WhatsApp…`, 'success');
+  showConfirmModal(pendingBookingData);
 }
 
-function buildWhatsAppMessage(b) {
-  const dt = new Date(b.datetime).toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
-  const msg = `🚗 *NEW RIDE BOOKING REQUEST*
+// ═══════════════════════════════════════════════
+// BOOKING CONFIRMATION MODAL
+// ═══════════════════════════════════════════════
+function showConfirmModal(b){
+  document.getElementById('cm-pnr').textContent=formatPNR(b.pnr);
+  const dt=b.datetime?new Date(b.datetime).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+  document.getElementById('cm-rows').innerHTML=`
+    <div class="confirm-row"><span class="confirm-label">🚙 Car</span><span class="confirm-val">${b.carName}</span></div>
+    <div class="confirm-row"><span class="confirm-label">📅 Date & Time</span><span class="confirm-val">${dt}</span></div>
+    <div class="confirm-row"><span class="confirm-label">📍 Pickup</span><span class="confirm-val">${b.pickup}</span></div>
+    <div class="confirm-row"><span class="confirm-label">🏁 Drop</span><span class="confirm-val">${b.drop}</span></div>
+    <div class="confirm-row"><span class="confirm-label">📏 Distance</span><span class="confirm-val">${b.km} km × ${b.days} day(s)</span></div>
+    <div class="confirm-row"><span class="confirm-label">💰 Estimated Total</span><span class="confirm-val" style="color:var(--gold);font-size:1.1rem">${fmt(b.total)}</span></div>
+    <div class="confirm-row"><span class="confirm-label">💳 Payment</span><span class="confirm-val">${b.payment}</span></div>
+  `;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function closeConfirmModal(){document.getElementById('confirm-modal').classList.remove('open')}
+function copyPNRFromModal(){
+  if(!pendingBookingData)return;
+  navigator.clipboard.writeText(formatPNR(pendingBookingData.pnr)).then(()=>toast('PNR copied! Save it to track your booking.','success')).catch(()=>toast('Could not copy.','error'));
+}
+function finalizeBooking(){
+  if(!pendingBookingData)return;
+  bookings.push(pendingBookingData);saveBookings();
+  sendBookingWhatsApp(pendingBookingData);
+  closeConfirmModal();
+  toast(`Booking ${formatPNR(pendingBookingData.pnr)} submitted! Opening WhatsApp…`,'success');
+  // Reset form
+  ['b-name','b-phone','b-pickup','b-drop','b-datetime','b-km','b-days','b-notes'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('b-car').value='';
+  calcBookingPrice();
+  pendingBookingData=null;
+}
+function printSlip(){
+  if(!pendingBookingData)return;
+  const b=pendingBookingData;
+  const dt=b.datetime?new Date(b.datetime).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>LuxeDrive Booking Slip</title></head><body>
+  <div style="font-family:serif;padding:28px;max-width:420px;border:2px solid #C9A84C;margin:20px auto">
+    <h2 style="text-align:center;color:#C9A84C;margin-bottom:4px">🚗 LuxeDrive</h2>
+    <p style="text-align:center;font-size:12px;color:#666;margin-bottom:16px">Premium Chauffeur Service</p>
+    <hr style="border-color:#C9A84C">
+    <p><b>PNR:</b> ${formatPNR(b.pnr)}</p>
+    <p><b>Name:</b> ${b.name}</p>
+    <p><b>Phone:</b> ${b.phone}</p>
+    <p><b>Car:</b> ${b.carName} (${b.carCategory})</p>
+    <p><b>Date:</b> ${dt}</p>
+    <p><b>Pickup:</b> ${b.pickup}</p>
+    <p><b>Drop:</b> ${b.drop}</p>
+    <p><b>Distance:</b> ${b.km} km</p>
+    <p><b>Days:</b> ${b.days}</p>
+    <p><b>Total:</b> ₹${b.total.toLocaleString('en-IN')}</p>
+    <p><b>Payment:</b> ${b.payment}</p>
+    <p><b>Status:</b> ${b.status}</p>
+    <hr style="border-color:#C9A84C">
+    <p style="font-size:11px;text-align:center;color:#888">Thank you for choosing LuxeDrive</p>
+  </div></body></html>`);
+  w.print();w.close();
+}
 
-Ref: *${b.ref}*
+function sendBookingWhatsApp(b){
+  const dt=b.datetime?new Date(b.datetime).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+  const msg=`🚗 *LUXEDRIVE BOOKING REQUEST*
+🎫 *PNR: ${formatPNR(b.pnr)}*
+Status: ⏳ Pending Confirmation
 
 👤 *Name:* ${b.name}
 📞 *Phone:* ${b.phone}
@@ -1234,259 +1050,473 @@ Ref: *${b.ref}*
 
 💳 *Payment Method:* ${b.payment}
 
-📝 *Special Instructions:* ${b.notes || 'None'}
+📝 *Special Instructions:* ${b.notes||'None'}
 
 _Please confirm availability and reply to this message._`.trim();
-  const wa = settings.whatsappNumber || '918757162209';
-  window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+  window.open(`https://wa.me/${settings.whatsappNumber||'91XXXXXXXXXX'}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
-function openWhatsApp() {
-  window.open(`https://wa.me/${settings.whatsappNumber || '918757162209'}`, '_blank');
-}
-
-// ─── FAQ ────────────────────────────────────────────────────────────────────
-function renderFAQs() {
-  document.getElementById('faq-list').innerHTML = DEFAULT_FAQS.map((f,i) => `
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(${i}, this)">
-        <span>${f.q}</span><span>+</span>
-      </div>
-      <div class="faq-a" id="faq-a-${i}"><p>${f.a}</p></div>
+// ═══════════════════════════════════════════════
+// TRACK BOOKING (PNR)
+// ═══════════════════════════════════════════════
+function checkPNR(){
+  const raw=document.getElementById('track-pnr').value.trim().toUpperCase().replace(/-/g,'');
+  const result=document.getElementById('track-result');
+  const notFound=document.getElementById('track-not-found');
+  result.style.display='none';notFound.style.display='none';
+  if(!raw){toast('Please enter a PNR.','error');return}
+  const b=bookings.find(b2=>b2.pnr.replace(/-/g,'')===raw);
+  if(!b){notFound.style.display='block';return}
+  const dt=b.datetime?new Date(b.datetime).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+  const statusMap={Pending:'⏳ PENDING',Confirmed:'✅ CONFIRMED',Cancelled:'❌ CANCELLED'};
+  const statusClass={Pending:'status-pending',Confirmed:'status-confirmed',Cancelled:'status-cancelled'};
+  result.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold)">${formatPNR(b.pnr)}</div>
+      <span class="status-pill ${statusClass[b.status]||'status-pending'}">${statusMap[b.status]||b.status}</span>
     </div>
-  `).join('');
-}
-function toggleFaq(i, el) {
-  const a = document.getElementById('faq-a-'+i);
-  const open = a.style.maxHeight && a.style.maxHeight !== '0px';
-  document.querySelectorAll('.faq-a').forEach(x => x.style.maxHeight='0px');
-  document.querySelectorAll('.faq-q').forEach(x => x.classList.remove('open'));
-  if(!open) { a.style.maxHeight = a.scrollHeight+'px'; el.classList.add('open'); }
-}
-
-// ─── FOOTER ─────────────────────────────────────────────────────────────────
-function updateFooterBusiness() {
-  document.getElementById('footer-business').innerHTML =
-    `${settings.businessName || 'LuxeDrive'}<br>Premium Cab Service<br><br>📞 Available 24/7<br>📱 WhatsApp us to book`;
+    <div class="br-row"><span class="br-label">👤 Name</span><span class="br-val">${b.name}</span></div>
+    <div class="br-row"><span class="br-label">🚙 Car</span><span class="br-val">${b.carName}</span></div>
+    <div class="br-row"><span class="br-label">📅 Date & Time</span><span class="br-val">${dt}</span></div>
+    <div class="br-row"><span class="br-label">📍 Pickup</span><span class="br-val">${b.pickup}</span></div>
+    <div class="br-row"><span class="br-label">🏁 Drop</span><span class="br-val">${b.drop}</span></div>
+    <div class="br-row"><span class="br-label">💰 Estimated Total</span><span class="br-val" style="color:var(--gold)">${fmt(b.total)}</span></div>
+    <div class="br-row"><span class="br-label">💳 Payment</span><span class="br-val">${b.payment}</span></div>
+  `;
+  result.style.display='block';
 }
 
-// ─── ADMIN ───────────────────────────────────────────────────────────────────
-function openAdminOverlay() {
-  if(sessionStorage.getItem('luxedrive_admin') === 'true') { openAdminDashboard(); return; }
-  document.getElementById('admin-overlay').style.display = 'flex';
-  document.getElementById('admin-pw-input').value = '';
-  document.getElementById('admin-err').style.display = 'none';
+// ═══════════════════════════════════════════════
+// FAQ
+// ═══════════════════════════════════════════════
+function renderFAQs(){
+  document.getElementById('faq-list').innerHTML=DEFAULT_FAQS.map((f,i)=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(${i},this)"><span>${f.q}</span><span>+</span></div>
+      <div class="faq-a" id="faq-a-${i}"><p>${f.a}</p></div>
+    </div>`).join('');
 }
-function closeAdmin() {
-  document.getElementById('admin-overlay').style.display = 'none';
-  history.replaceState(null,null,' ');
+function toggleFaq(i,el){
+  const a=document.getElementById('faq-a-'+i);
+  const open=a.style.maxHeight&&a.style.maxHeight!=='0px';
+  document.querySelectorAll('.faq-a').forEach(x=>x.style.maxHeight='0px');
+  document.querySelectorAll('.faq-q').forEach(x=>x.classList.remove('open'));
+  if(!open){a.style.maxHeight=a.scrollHeight+'px';el.classList.add('open')}
 }
-function adminLogin() {
-  const pw = document.getElementById('admin-pw-input').value;
-  if(pw === (settings.adminPassword || 'anu123')) {
-    sessionStorage.setItem('luxedrive_admin','true');
-    document.getElementById('admin-overlay').style.display = 'none';
-    openAdminDashboard();
-  } else {
-    document.getElementById('admin-err').style.display = 'block';
+
+// ═══════════════════════════════════════════════
+// REVIEWS (Public)
+// ═══════════════════════════════════════════════
+function buildStarUI(){
+  const container=document.getElementById('rv-stars');
+  container.innerHTML='';
+  for(let i=1;i<=5;i++){
+    const s=document.createElement('span');
+    s.className='star';s.textContent='★';s.dataset.v=i;
+    s.addEventListener('click',()=>{rvRating=i;updateStars()});
+    s.addEventListener('mouseenter',()=>{highlightStars(i)});
+    container.appendChild(s);
   }
+  updateStars();
 }
-function adminLogout() {
+function highlightStars(n){
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('hover-filled',i<n));
+}
+function resetStarHover(){document.querySelectorAll('.star').forEach(s=>s.classList.remove('hover-filled'));updateStars()}
+function updateStars(){document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('filled',i<rvRating))}
+
+function submitReview(){
+  const name=document.getElementById('rv-name').value.trim();
+  const pnr=document.getElementById('rv-pnr').value.trim().toUpperCase().replace(/-/g,'');
+  const text=document.getElementById('rv-text').value.trim();
+  const carUsed=document.getElementById('rv-car').value;
+  if(!name){toast('Please enter your name.','error');return}
+  if(!rvRating){toast('Please select a star rating.','error');return}
+  if(!text){toast('Please write a review.','error');return}
+  // verify PNR
+  let verified=false;
+  if(pnr){
+    const match=bookings.find(b=>b.pnr.replace(/-/g,'')===pnr&&b.name.toLowerCase()===name.toLowerCase());
+    verified=!!match;
+  }
+  const review={
+    id:Date.now(),name,pnr:pnr?`LX-${pnr.slice(2,6)}-${pnr.slice(6,10)}-${pnr.slice(10)}`:'' ,
+    rating:rvRating,text,carUsed:carUsed||'—',
+    date:new Date().toLocaleDateString('en-IN'),
+    verified,approved:false,featured:false
+  };
+  reviews.push(review);saveReviews();
+  toast('Review submitted! It will appear after approval.','success');
+  document.getElementById('rv-name').value='';document.getElementById('rv-pnr').value='';
+  document.getElementById('rv-text').value='';document.getElementById('rv-car').value='';
+  rvRating=0;updateStars();
+}
+
+function renderPublicReviews(){
+  const approved=reviews.filter(r=>r.approved).sort((a,b)=>(b.featured?1:0)-(a.featured?1:0));
+  const grid=document.getElementById('reviews-grid');
+  if(!approved.length){grid.innerHTML='<p style="color:var(--text-sec);text-align:center;padding:32px">Be the first to share your experience!</p>';return}
+  const avg=approved.reduce((s,r)=>s+r.rating,0)/approved.length;
+  const stars='★'.repeat(Math.round(avg))+'☆'.repeat(5-Math.round(avg));
+  document.getElementById('avg-rating-display').innerHTML=`
+    <div class="avg-big">${avg.toFixed(1)}</div>
+    <div><div class="avg-stars">${stars}</div><div class="avg-count">${approved.length} review${approved.length!==1?'s':''}</div></div>
+  `;
+  grid.innerHTML=approved.slice(0,6).map(r=>`
+    <div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+      <div class="review-text">"${r.text}"</div>
+      <div class="review-author">${r.name}${r.verified?'<span class="verified-badge">🟢 Verified</span>':''}</div>
+      <div class="review-meta">${r.carUsed} · ${r.date}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// FOOTER
+// ═══════════════════════════════════════════════
+function updateFooterBusiness(){
+  document.getElementById('footer-business').innerHTML=`${settings.businessName||'LuxeDrive'}<br>Premium Cab Service<br><br>📞 Available 24/7<br>📱 WhatsApp us to book`;
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════
+function openAdminOverlay(){
+  if(sessionStorage.getItem('luxedrive_admin')==='true'){openAdminDashboard();return}
+  document.getElementById('admin-overlay').style.display='flex';
+  document.getElementById('admin-pw-input').value='';
+  document.getElementById('admin-err').style.display='none';
+}
+function closeAdminOverlay(){document.getElementById('admin-overlay').style.display='none';history.replaceState(null,null,' ')}
+function adminLogin(){
+  const pw=document.getElementById('admin-pw-input').value;
+  if(pw===(settings.adminPassword||'anu123')){
+    sessionStorage.setItem('luxedrive_admin','true');
+    document.getElementById('admin-overlay').style.display='none';
+    openAdminDashboard();
+  }else{document.getElementById('admin-err').style.display='block'}
+}
+function adminLogout(){
   sessionStorage.removeItem('luxedrive_admin');
   document.getElementById('admin-dashboard').classList.remove('open');
   history.replaceState(null,null,' ');
-  toast('Logged out.', 'info');
+  toast('Logged out.','info');
 }
-function openAdminDashboard() {
+function openAdminDashboard(){
   document.getElementById('admin-dashboard').classList.add('open');
-  renderAdminCars(); renderAdminPricing(); renderAdminBookings();
-  document.getElementById('set-wa').value = settings.whatsappNumber || '';
-  document.getElementById('set-bname').value = settings.businessName || '';
-  document.getElementById('set-pw').value = '';
+  renderAdminDashboard();renderAdminCars();renderAdminPricing();renderAdminBookings();renderAdminReviews();
+  document.getElementById('set-wa').value=settings.whatsappNumber||'';
+  document.getElementById('set-bname').value=settings.businessName||'';
+  document.getElementById('set-pw').value='';
+  showAdminAlert();
 }
-function switchAdminTab(tab, el) {
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+function switchAdminTab(tab,el){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
-  if(tab === 'bookings') renderAdminBookings();
+  if(tab==='bookings')renderAdminBookings();
+  if(tab==='dashboard')renderAdminDashboard();
+  if(tab==='reviews')renderAdminReviews();
+}
+function showAdminAlert(){
+  const pending=bookings.filter(b=>b.status==='Pending').length;
+  const pendingReviews=reviews.filter(r=>!r.approved).length;
+  const msgs=[];
+  if(pending)msgs.push(`${pending} pending booking${pending>1?'s':''} need attention`);
+  if(pendingReviews)msgs.push(`${pendingReviews} review${pendingReviews>1?'s':''} awaiting approval`);
+  const al=document.getElementById('admin-alert-box');
+  if(msgs.length){al.innerHTML='⚠️ '+msgs.join(' and ')+'.'  ;al.style.display='block'}
+  else{al.style.display='none'}
 }
 
-function renderAdminCars() {
-  document.getElementById('cars-tbody').innerHTML = cars.map(car => `
-    <tr>
-      <td><strong>${car.name}</strong></td>
-      <td>${car.category}</td>
-      <td>₹${car.perKmRate}</td>
-      <td>₹${car.driverCharge}</td>
-      <td>${car.seats}</td>
-      <td>
-        <label class="toggle-switch">
-          <input type="checkbox" ${car.available ? 'checked' : ''} onchange="toggleCarAvailability(${car.id})">
-          <span class="toggle-slider"></span>
-        </label>
-      </td>
-      <td>
-        <button class="btn-sm btn-edit" onclick="openCarModal(${car.id})">Edit</button>
-        <button class="btn-sm btn-del" onclick="deleteCar(${car.id})" style="margin-left:4px;">Delete</button>
-      </td>
-    </tr>
-  `).join('');
+// Dashboard
+function renderAdminDashboard(){
+  const total=bookings.length;
+  const pending=bookings.filter(b=>b.status==='Pending').length;
+  const confirmed=bookings.filter(b=>b.status==='Confirmed').length;
+  const cancelled=bookings.filter(b=>b.status==='Cancelled').length;
+  const availCars=cars.filter(c=>c.available).length;
+  const pendingRevs=reviews.filter(r=>!r.approved).length;
+  // 2h expiry count
+  const twoH=2*60*60*1000;
+  const expiring=bookings.filter(b=>b.status==='Pending'&&(Date.now()-new Date(b.submittedAt).getTime())>twoH).length;
+  document.getElementById('stat-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val">${total}</div><div class="stat-label">Total Bookings</div></div>
+    <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-val" style="color:var(--warn)">${pending}</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" style="color:var(--success)">${confirmed}</div><div class="stat-label">Confirmed</div></div>
+    <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-val" style="color:var(--danger)">${cancelled}</div><div class="stat-label">Cancelled</div></div>
+    <div class="stat-card"><div class="stat-icon">🚗</div><div class="stat-val">${availCars}/${cars.length}</div><div class="stat-label">Cars Available</div></div>
+    <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" style="color:var(--warn)">${pendingRevs}</div><div class="stat-label">Pending Reviews</div></div>
+    ${expiring?`<div class="stat-card" style="border-color:rgba(224,169,82,.4)"><div class="stat-icon">🕐</div><div class="stat-val" style="color:var(--warn)">${expiring}</div><div class="stat-label">Need Attention (2h+)</div></div>`:''}
+  `;
+  const recent=[...bookings].reverse().slice(0,5);
+  const statusClass={Pending:'status-pending',Confirmed:'status-confirmed',Cancelled:'status-cancelled'};
+  document.getElementById('dash-bookings-tbody').innerHTML=recent.map(b=>`<tr>
+    <td><code style="color:var(--gold);font-size:.72rem">${formatPNR(b.pnr)}</code></td>
+    <td>${b.name}</td><td>${b.carName}</td>
+    <td style="color:var(--gold)">₹${b.total.toLocaleString('en-IN')}</td>
+    <td><span class="status-pill ${statusClass[b.status]||'status-pending'}" style="font-size:.7rem">${b.status}</span></td>
+  </tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--text-sec);padding:20px">No bookings yet.</td></tr>';
+  showAdminAlert();
 }
 
-function toggleCarAvailability(id) {
-  const car = cars.find(c => c.id === id);
-  if(car) { car.available = !car.available; saveCars(); renderCars('All'); populateCarDropdowns(); renderAdminPricing(); toast(`${car.name} marked as ${car.available ? 'Available' : 'Unavailable'}.`, 'success'); }
+// Cars
+function renderAdminCars(){
+  document.getElementById('cars-tbody').innerHTML=cars.map(car=>`<tr>
+    <td><strong>${car.name}</strong></td>
+    <td>${car.category}</td><td>₹${car.perKmRate}</td><td>₹${car.driverCharge}</td><td>${car.seats}</td>
+    <td><label class="toggle-switch"><input type="checkbox" ${car.available?'checked':''} onchange="toggleCarAvailability(${car.id})"><span class="toggle-slider"></span></label></td>
+    <td>
+      <button class="btn-sm btn-edit" onclick="openCarModal(${car.id})">Edit</button>
+      <button class="btn-sm btn-del" onclick="deleteCar(${car.id})" style="margin-left:4px">Del</button>
+    </td>
+  </tr>`).join('');
 }
-
-function deleteCar(id) {
-  if(!confirm('Delete this car? This cannot be undone.')) return;
-  cars = cars.filter(c => c.id !== id); saveCars(); renderAdminCars(); renderCars('All'); populateCarDropdowns(); toast('Car deleted.', 'error');
+function toggleCarAvailability(id){
+  const car=cars.find(c=>c.id===id);
+  if(car){car.available=!car.available;saveCars();renderCars(activeFleetFilter);populateCarDropdowns();renderAdminPricing();renderAdminCars();toast(`${car.name} marked as ${car.available?'Available':'Unavailable'}.`,'success')}
 }
-
-// Car Modal
-function openCarModal(id) {
-  carModalId = id;
-  const car = id ? cars.find(c => c.id === id) : null;
-  document.getElementById('car-modal-title').textContent = car ? 'Edit Car' : 'Add New Car';
-  document.getElementById('cm-name').value = car?.name || '';
-  document.getElementById('cm-cat').value = car?.category || 'Economy';
-  document.getElementById('cm-km').value = car?.perKmRate || '';
-  document.getElementById('cm-driver').value = car?.driverCharge || '';
-  document.getElementById('cm-seats').value = car?.seats || '';
-  document.getElementById('cm-fuel').value = car?.fuel || 'Petrol';
-  document.getElementById('cm-img').value = car?.image || '';
-  setCmAvail(car ? car.available : true);
+function deleteCar(id){
+  if(!confirm('Delete this car? This cannot be undone.'))return;
+  cars=cars.filter(c=>c.id!==id);saveCars();renderAdminCars();renderCars(activeFleetFilter);populateCarDropdowns();toast('Car deleted.','error');
+}
+function openCarModal(id){
+  carModalId=id;
+  const car=id?cars.find(c=>c.id===id):null;
+  document.getElementById('car-modal-title').textContent=car?'Edit Car':'Add New Car';
+  document.getElementById('cm-name').value=car?.name||'';
+  document.getElementById('cm-cat').value=car?.category||'Economy';
+  document.getElementById('cm-km').value=car?.perKmRate||'';
+  document.getElementById('cm-driver').value=car?.driverCharge||'';
+  document.getElementById('cm-seats').value=car?.seats||'';
+  document.getElementById('cm-fuel').value=car?.fuel||'Petrol';
+  document.getElementById('cm-img').value=car?.image||'';
+  setCmAvail(car?car.available:true);
   document.getElementById('car-modal').classList.add('open');
 }
-function closeCarModal() { document.getElementById('car-modal').classList.remove('open'); }
-function setCmAvail(val) {
-  cmAvail = val;
-  document.getElementById('cm-avail-yes').classList.toggle('active', val);
-  document.getElementById('cm-avail-no').classList.toggle('active', !val);
+function closeCarModal(){document.getElementById('car-modal').classList.remove('open')}
+function setCmAvail(val){
+  cmAvail=val;
+  document.getElementById('cm-avail-yes').classList.toggle('active',val);
+  document.getElementById('cm-avail-no').classList.toggle('active',!val);
 }
-function saveCar() {
-  const name = document.getElementById('cm-name').value.trim();
-  const km = parseFloat(document.getElementById('cm-km').value);
-  const driver = parseFloat(document.getElementById('cm-driver').value);
-  if(!name || !km || !driver) { toast('Please fill in all required fields.', 'error'); return; }
-  if(carModalId) {
-    const car = cars.find(c => c.id === carModalId);
-    car.name = name; car.category = document.getElementById('cm-cat').value;
-    car.perKmRate = km; car.driverCharge = driver;
-    car.seats = parseInt(document.getElementById('cm-seats').value) || car.seats;
-    car.fuel = document.getElementById('cm-fuel').value;
-    car.image = document.getElementById('cm-img').value || car.image;
-    car.available = cmAvail;
-    toast(`${name} updated.`, 'success');
-  } else {
-    const newCar = {
-      id: Date.now(), name, category: document.getElementById('cm-cat').value,
-      perKmRate: km, driverCharge: driver,
-      seats: parseInt(document.getElementById('cm-seats').value) || 4,
-      fuel: document.getElementById('cm-fuel').value,
-      image: document.getElementById('cm-img').value || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600',
-      available: cmAvail, ac: true
-    };
-    cars.push(newCar);
-    toast(`${name} added to fleet.`, 'success');
+function saveCar(){
+  const name=document.getElementById('cm-name').value.trim();
+  const km=parseFloat(document.getElementById('cm-km').value);
+  const driver=parseFloat(document.getElementById('cm-driver').value);
+  if(!name||!km||!driver){toast('Please fill in all required fields.','error');return}
+  if(carModalId){
+    const car=cars.find(c=>c.id===carModalId);
+    car.name=name;car.category=document.getElementById('cm-cat').value;
+    car.perKmRate=km;car.driverCharge=driver;
+    car.seats=parseInt(document.getElementById('cm-seats').value)||car.seats;
+    car.fuel=document.getElementById('cm-fuel').value;
+    car.image=document.getElementById('cm-img').value||car.image;
+    car.available=cmAvail;
+    toast(`${name} updated.`,'success');
+  }else{
+    cars.push({id:Date.now(),name,category:document.getElementById('cm-cat').value,perKmRate:km,driverCharge:driver,seats:parseInt(document.getElementById('cm-seats').value)||4,fuel:document.getElementById('cm-fuel').value,image:document.getElementById('cm-img').value||'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600',available:cmAvail,ac:true});
+    toast(`${name} added to fleet.`,'success');
   }
-  saveCars(); renderAdminCars(); renderCars('All'); populateCarDropdowns(); closeCarModal();
+  saveCars();renderAdminCars();renderCars(activeFleetFilter);populateCarDropdowns();renderReviewCarDropdown();closeCarModal();
 }
 
 // Pricing
-function renderAdminPricing() {
-  document.getElementById('pricing-tbody').innerHTML = cars.map(car => `
-    <tr>
-      <td>${car.name}</td>
-      <td><input type="number" value="${car.perKmRate}" id="pkm-${car.id}" style="width:70px;padding:6px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:4px;"></td>
-      <td><input type="number" value="${car.driverCharge}" id="pdr-${car.id}" style="width:80px;padding:6px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:4px;"></td>
-      <td><button class="btn-sm btn-edit" onclick="saveIndRate(${car.id})">Save</button></td>
-    </tr>
-  `).join('');
+function renderAdminPricing(){
+  document.getElementById('pricing-tbody').innerHTML=cars.map(car=>`<tr>
+    <td>${car.name}</td>
+    <td><input type="number" value="${car.perKmRate}" id="pkm-${car.id}" style="width:70px;padding:6px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:4px"></td>
+    <td><input type="number" value="${car.driverCharge}" id="pdr-${car.id}" style="width:80px;padding:6px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:4px"></td>
+    <td><button class="btn-sm btn-edit" onclick="saveIndRate(${car.id})">Save</button></td>
+  </tr>`).join('');
   renderSurchargeLog();
 }
-function saveIndRate(id) {
-  const car = cars.find(c => c.id === id);
-  car.perKmRate = parseFloat(document.getElementById('pkm-'+id).value) || car.perKmRate;
-  car.driverCharge = parseFloat(document.getElementById('pdr-'+id).value) || car.driverCharge;
-  saveCars(); renderCars('All'); populateCarDropdowns(); toast(`${car.name} rates updated.`, 'success');
+function saveIndRate(id){
+  const car=cars.find(c=>c.id===id);
+  car.perKmRate=parseFloat(document.getElementById('pkm-'+id).value)||car.perKmRate;
+  car.driverCharge=parseFloat(document.getElementById('pdr-'+id).value)||car.driverCharge;
+  saveCars();renderCars(activeFleetFilter);populateCarDropdowns();toast(`${car.name} rates updated.`,'success');
 }
-function applyGlobalSurcharge() {
-  const pct = parseFloat(document.getElementById('surcharge-input').value);
-  if(isNaN(pct)) { toast('Enter a valid percentage.', 'error'); return; }
-  cars.forEach(car => {
-    car.perKmRate = Math.round(car.perKmRate * (1 + pct/100));
-    car.driverCharge = Math.round(car.driverCharge * (1 + pct/100));
-  });
-  surchargeLog.unshift({ at: new Date().toLocaleString('en-IN'), pct });
-  if(surchargeLog.length > 5) surchargeLog = surchargeLog.slice(0,5);
-  localStorage.setItem('luxedrive_surcharge_log', JSON.stringify(surchargeLog));
-  saveCars(); renderAdminPricing(); renderCars('All'); populateCarDropdowns();
-  toast(`${pct > 0 ? '+' : ''}${pct}% applied to all cars.`, pct > 0 ? 'info' : 'success');
+function applyGlobalSurcharge(){
+  const pct=parseFloat(document.getElementById('surcharge-input').value);
+  if(isNaN(pct)){toast('Enter a valid percentage.','error');return}
+  cars.forEach(car=>{car.perKmRate=Math.round(car.perKmRate*(1+pct/100));car.driverCharge=Math.round(car.driverCharge*(1+pct/100))});
+  surchargeLog.unshift({at:new Date().toLocaleString('en-IN'),pct});
+  if(surchargeLog.length>5)surchargeLog=surchargeLog.slice(0,5);
+  localStorage.setItem('luxedrive_surcharge_log',JSON.stringify(surchargeLog));
+  saveCars();renderAdminPricing();renderCars(activeFleetFilter);populateCarDropdowns();
+  toast(`${pct>0?'+':''}${pct}% applied to all cars.`,pct>0?'info':'success');
 }
-function resetDefaultRates() {
-  if(!confirm('Reset all rates to factory defaults?')) return;
-  cars.forEach(car => {
-    const def = DEFAULT_CARS.find(d => d.name === car.name);
-    if(def) { car.perKmRate = def.perKmRate; car.driverCharge = def.driverCharge; }
-  });
-  saveCars(); renderAdminPricing(); renderCars('All'); populateCarDropdowns(); toast('Rates reset to defaults.', 'success');
+function resetDefaultRates(){
+  if(!confirm('Reset all rates to factory defaults?'))return;
+  cars.forEach(car=>{const def=DEFAULT_CARS.find(d=>d.name===car.name);if(def){car.perKmRate=def.perKmRate;car.driverCharge=def.driverCharge}});
+  saveCars();renderAdminPricing();renderCars(activeFleetFilter);populateCarDropdowns();toast('Rates reset to defaults.','success');
 }
-function renderSurchargeLog() {
-  const el = document.getElementById('surcharge-log');
-  if(!surchargeLog.length) { el.innerHTML = ''; return; }
-  el.innerHTML = '<p style="font-size:0.75rem;color:var(--text-sec);margin-bottom:8px;">Last changes:</p>' +
-    surchargeLog.map(l => `<p style="font-size:0.78rem;color:var(--text-sec);padding:4px 0;">${l.at} — ${l.pct > 0 ? '+' : ''}${l.pct}% applied</p>`).join('');
+function renderSurchargeLog(){
+  const el=document.getElementById('surcharge-log');
+  if(!surchargeLog.length){el.innerHTML='';return}
+  el.innerHTML='<p style="font-size:.75rem;color:var(--text-sec);margin-bottom:8px">Last changes:</p>'+surchargeLog.map(l=>`<p style="font-size:.78rem;color:var(--text-sec);padding:3px 0">${l.at} — ${l.pct>0?'+':''}${l.pct}% applied</p>`).join('');
 }
 
-// Bookings
-function renderAdminBookings() {
-  const tbody = document.getElementById('bookings-tbody');
-  const none = document.getElementById('no-bookings');
-  if(!bookings.length) { tbody.innerHTML = ''; none.style.display='block'; return; }
+// Bookings (Admin)
+function renderAdminBookings(){
+  const search=(document.getElementById('bk-search')?.value||'').toLowerCase();
+  const statusFilter=document.getElementById('bk-status')?.value||'';
+  const sortVal=document.getElementById('bk-sort')?.value||'newest';
+  let list=[...bookings];
+  if(statusFilter)list=list.filter(b=>b.status===statusFilter);
+  if(search)list=list.filter(b=>(b.pnr||'').toLowerCase().includes(search)||(b.name||'').toLowerCase().includes(search)||(b.phone||'').includes(search));
+  list.sort((a,b2)=>sortVal==='newest'?new Date(b2.submittedAt)-new Date(a.submittedAt):new Date(a.submittedAt)-new Date(b2.submittedAt));
+  const tbody=document.getElementById('bookings-tbody');
+  const none=document.getElementById('no-bookings');
+  if(!list.length){tbody.innerHTML='';none.style.display='block';return}
   none.style.display='none';
-  tbody.innerHTML = [...bookings].reverse().map((b,i) => {
-    const ri = bookings.length - 1 - i;
-    return `<tr>
-      <td><code style="color:var(--gold);font-size:0.72rem;">${b.ref}</code></td>
-      <td style="white-space:nowrap;">${new Date(b.submittedAt).toLocaleString('en-IN',{dateStyle:'short',timeStyle:'short'})}</td>
+  const twoH=2*60*60*1000;
+  tbody.innerHTML=list.map(b=>{
+    const origIdx=bookings.findIndex(x=>x.pnr===b.pnr);
+    const expired=b.status==='Pending'&&(Date.now()-new Date(b.submittedAt).getTime())>twoH;
+    const dt=new Date(b.submittedAt).toLocaleString('en-IN',{dateStyle:'short',timeStyle:'short'});
+    const statusClass={Pending:'status-pending',Confirmed:'status-confirmed',Cancelled:'status-cancelled'};
+    return`<tr${expired?' class="expired-row"':''}>
+      <td><code style="color:var(--gold);font-size:.7rem">${formatPNR(b.pnr)}</code>${expired?' <span title="Awaiting confirmation 2h+" style="color:var(--warn)">🕐</span>':''}</td>
+      <td style="white-space:nowrap;font-size:.78rem">${dt}</td>
       <td>${b.name}</td>
       <td>${b.phone}</td>
-      <td>${b.carName}</td>
-      <td style="font-size:0.78rem;">${b.pickup.slice(0,20)}… → ${b.drop.slice(0,20)}…</td>
-      <td style="color:var(--gold);font-weight:600;">₹${b.total.toLocaleString('en-IN')}</td>
+      <td style="font-size:.8rem">${b.carName}</td>
+      <td style="font-size:.75rem">${(b.pickup||'').slice(0,18)}…→${(b.drop||'').slice(0,18)}…</td>
+      <td style="color:var(--gold);font-weight:600">₹${b.total.toLocaleString('en-IN')}</td>
       <td>${b.payment}</td>
-      <td>
-        <select onchange="updateBookingStatus(${ri}, this.value)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:4px;border-radius:4px;font-size:0.75rem;">
-          <option ${b.status==='Pending'?'selected':''}>Pending</option>
-          <option ${b.status==='Confirmed'?'selected':''}>Confirmed</option>
-          <option ${b.status==='Cancelled'?'selected':''}>Cancelled</option>
-        </select>
+      <td><span class="status-pill ${statusClass[b.status]||'status-pending'}" style="font-size:.68rem">${b.status}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn-sm btn-success" onclick="adminConfirmBooking(${origIdx})" style="margin:2px" title="Confirm">✅</button>
+        <button class="btn-sm btn-del" onclick="adminCancelBooking(${origIdx})" style="margin:2px" title="Cancel">❌</button>
+        <button class="btn-sm btn-warn" onclick="adminPendingBooking(${origIdx})" style="margin:2px" title="Set Pending">🔄</button>
+        <button class="btn-sm btn-edit" onclick="adminPrintSlip(${origIdx})" style="margin:2px" title="Print">🖨️</button>
       </td>
     </tr>`;
   }).join('');
 }
-function updateBookingStatus(idx, status) {
-  bookings[idx].status = status; saveBookings(); toast('Status updated.', 'success');
+function adminConfirmBooking(idx){
+  bookings[idx].status='Confirmed';saveBookings();renderAdminBookings();renderAdminDashboard();
+  sendStatusWhatsApp(bookings[idx],buildConfirmationMessage(bookings[idx]));
+  toast('Booking confirmed & WhatsApp opened.','success');
 }
-function exportBookings() {
-  if(!bookings.length) { toast('No bookings to export.', 'error'); return; }
-  const text = bookings.map(b => `${b.ref} | ${b.name} | ${b.phone} | ${b.carName} | ₹${b.total} | ${b.status} | ${b.submittedAt}`).join('\n');
-  navigator.clipboard.writeText(text).then(() => toast('Booking list copied to clipboard!', 'success')).catch(() => toast('Could not copy.', 'error'));
+function adminCancelBooking(idx){
+  bookings[idx].status='Cancelled';saveBookings();renderAdminBookings();renderAdminDashboard();
+  sendStatusWhatsApp(bookings[idx],buildCancellationMessage(bookings[idx]));
+  toast('Booking cancelled & WhatsApp opened.','error');
+}
+function adminPendingBooking(idx){
+  bookings[idx].status='Pending';saveBookings();renderAdminBookings();renderAdminDashboard();toast('Status set to Pending.','info');
+}
+function adminPrintSlip(idx){
+  printSlipAdmin(bookings[idx]);
+}
+function printSlipAdmin(b){
+  const dt=b.datetime?new Date(b.datetime).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>LuxeDrive Booking Slip</title></head><body>
+  <div style="font-family:serif;padding:28px;max-width:420px;border:2px solid #C9A84C;margin:20px auto">
+    <h2 style="text-align:center;color:#C9A84C">🚗 LuxeDrive</h2><hr style="border-color:#C9A84C">
+    <p><b>PNR:</b> ${formatPNR(b.pnr)}</p><p><b>Name:</b> ${b.name}</p><p><b>Phone:</b> ${b.phone}</p>
+    <p><b>Car:</b> ${b.carName}</p><p><b>Date:</b> ${dt}</p><p><b>Pickup:</b> ${b.pickup}</p>
+    <p><b>Drop:</b> ${b.drop}</p><p><b>Distance:</b> ${b.km} km</p><p><b>Days:</b> ${b.days}</p>
+    <p><b>Total:</b> ₹${b.total.toLocaleString('en-IN')}</p><p><b>Payment:</b> ${b.payment}</p>
+    <p><b>Status:</b> ${b.status}</p><hr style="border-color:#C9A84C">
+    <p style="font-size:11px;text-align:center;color:#888">Thank you for choosing LuxeDrive</p>
+  </div></body></html>`);
+  w.print();w.close();
+}
+function buildConfirmationMessage(b){
+  const dt=b.datetime?new Date(b.datetime).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+  return`✅ *BOOKING CONFIRMED — LuxeDrive*
+
+Dear ${b.name},
+
+Your ride has been *CONFIRMED*! 🎉
+
+🎫 *PNR:* ${formatPNR(b.pnr)}
+🚙 *Car:* ${b.carName}
+📅 *Date & Time:* ${dt}
+📍 *Pickup:* ${b.pickup}
+🏁 *Drop:* ${b.drop}
+💰 *Estimated Fare:* ₹${b.total.toLocaleString('en-IN')}
+💳 *Payment:* ${b.payment}
+
+📞 For any changes, call us or reply to this message.
+
+*Thank you for choosing LuxeDrive! 🚗✨*`.trim();
+}
+function buildCancellationMessage(b){
+  const dt=b.datetime?new Date(b.datetime).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+  return`❌ *BOOKING CANCELLED — LuxeDrive*
+
+Dear ${b.name},
+
+We regret to inform you that your booking has been *CANCELLED*.
+
+🎫 *PNR:* ${formatPNR(b.pnr)}
+🚙 *Car:* ${b.carName}
+📅 *Date:* ${dt}
+
+If this was a mistake or you'd like to rebook, please contact us or visit our website.
+
+📞 We apologize for any inconvenience caused.
+
+*— LuxeDrive Team*`.trim();
+}
+function sendStatusWhatsApp(b,msg){
+  const ph=b.phone.replace(/\D/g,'');
+  const full=ph.startsWith('91')?ph:'91'+ph;
+  window.open(`https://wa.me/${full}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+function exportBookings(){
+  if(!bookings.length){toast('No bookings to export.','error');return}
+  const text=bookings.map(b=>`${formatPNR(b.pnr)} | ${b.name} | ${b.phone} | ${b.carName} | ₹${b.total} | ${b.status} | ${b.submittedAt}`).join('\n');
+  navigator.clipboard.writeText(text).then(()=>toast('Booking list copied to clipboard!','success')).catch(()=>toast('Could not copy.','error'));
 }
 
+// Reviews (Admin)
+function renderAdminReviews(){
+  const pending=reviews.filter(r=>!r.approved).length;
+  document.getElementById('reviews-pending-badge').textContent=pending?`${pending} pending approval`:'';
+  const none=document.getElementById('no-reviews-admin');
+  const tbody=document.getElementById('reviews-tbody');
+  if(!reviews.length){tbody.innerHTML='';none.style.display='block';return}
+  none.style.display='none';
+  tbody.innerHTML=[...reviews].reverse().map((r,ri)=>{
+    const origIdx=reviews.length-1-ri;
+    return`<tr style="${!r.approved?'opacity:.6':''}">
+      <td>${r.name}</td>
+      <td>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</td>
+      <td style="max-width:200px;font-size:.78rem;color:var(--text-sec)">${r.text.slice(0,80)}…</td>
+      <td style="font-size:.78rem">${r.carUsed}</td>
+      <td style="font-size:.75rem;white-space:nowrap">${r.date}</td>
+      <td style="font-size:.72rem;color:var(--gold)">${r.pnr||'—'}</td>
+      <td>${r.verified?'🟢':'—'}</td>
+      <td><label class="toggle-switch"><input type="checkbox" ${r.featured?'checked':''} onchange="toggleFeaturedReview(${origIdx})"><span class="toggle-slider"></span></label></td>
+      <td style="white-space:nowrap">
+        ${!r.approved?`<button class="btn-sm btn-success" onclick="approveReview(${origIdx})" style="margin:2px">✅ Approve</button>`:'<span style="font-size:.72rem;color:var(--success)">✅</span>'}
+        <button class="btn-sm btn-del" onclick="deleteReview(${origIdx})" style="margin:2px">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function approveReview(idx){reviews[idx].approved=true;saveReviews();renderAdminReviews();renderPublicReviews();renderAdminDashboard();toast('Review approved.','success')}
+function deleteReview(idx){if(!confirm('Delete this review?'))return;reviews.splice(idx,1);saveReviews();renderAdminReviews();renderPublicReviews();toast('Review deleted.','error')}
+function toggleFeaturedReview(idx){reviews[idx].featured=!reviews[idx].featured;saveReviews();renderAdminReviews();renderPublicReviews();toast(`Review ${reviews[idx].featured?'featured':'unfeatured'}.`,'info')}
+
 // Settings
-function saveSettings() {
-  const wa = document.getElementById('set-wa').value.trim();
-  const bn = document.getElementById('set-bname').value.trim();
-  const pw = document.getElementById('set-pw').value.trim();
-  if(wa) settings.whatsappNumber = wa;
-  if(bn) settings.businessName = bn;
-  if(pw) settings.adminPassword = pw;
-  localStorage.setItem('luxedrive_settings', JSON.stringify(settings));
-  updateFooterBusiness();
-  toast('Settings saved.', 'success');
+function saveSettings(){
+  const wa=document.getElementById('set-wa').value.trim();
+  const bn=document.getElementById('set-bname').value.trim();
+  const pw=document.getElementById('set-pw').value.trim();
+  if(wa)settings.whatsappNumber=wa;
+  if(bn)settings.businessName=bn;
+  if(pw)settings.adminPassword=pw;
+  saveSettings2();updateFooterBusiness();
+  toast('Settings saved.','success');
 }
 </script>
 </body>
